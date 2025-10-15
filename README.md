@@ -74,13 +74,13 @@ dotnet ef database update
 dotnet run
 ```
 
-A API estará disponível em `https://localhost:7103` ou `http://localhost:5103`
+A API estará disponível em `https://localhost:7224`
 
 ## 📚 Documentação da API
 
 ### Base URL
 ```
-https://localhost:7103/api
+https://localhost:7224/api
 ```
 
 ### 🔓 Endpoints Públicos
