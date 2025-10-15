@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Gabriel\\Downloads\\CatalogoFilmes\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0D74EBC9-4041-4F65-B0BB-A57D5EBD6970}|CatalogoFilmes\\CatalogoFilmes.csproj|c:\\users\\gabriel\\downloads\\catalogofilmes\\catalogofilmes\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0D74EBC9-4041-4F65-B0BB-A57D5EBD6970}|CatalogoFilmes\\CatalogoFilmes.csproj|solutionrelative:catalogofilmes\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Gabriel\\Downloads\\CatalogoFilmes\\CatalogoFilmes\\appsettings.json",
+              "RelativeDocumentMoniker": "CatalogoFilmes\\appsettings.json",
+              "ToolTip": "C:\\Users\\Gabriel\\Downloads\\CatalogoFilmes\\CatalogoFilmes\\appsettings.json",
+              "RelativeToolTip": "CatalogoFilmes\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-10-15T23:14:31.484Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
