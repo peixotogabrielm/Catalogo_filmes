@@ -172,19 +172,19 @@ https://localhost:7224/api
 
 1. **Faça login** para obter o token:
 ```bash
-curl -X POST "https://localhost:7103/api/auth/login" \
+curl -X POST "https://localhost:7224/api/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"email":"seu@email.com","senha":"suasenha"}'
 ```
 
 2. **Use o token** em requisições protegidas:
 ```bash
-curl -X GET "https://localhost:7103/api/filmes/GetAllFilmes" \
+curl -X GET "https://localhost:7224/api/filmes/GetAllFilmes" \
   -H "Authorization: Bearer SEU_TOKEN_JWT_AQUI"
 ```
 
 ### Swagger UI
-Acesse `https://localhost:7103/swagger` para testar a API interativamente.
+Acesse `https://localhost:7224/swagger` para testar a API interativamente.
 
 ## 📊 Modelo de Dados
 
