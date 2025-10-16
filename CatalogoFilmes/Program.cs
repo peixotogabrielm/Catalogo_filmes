@@ -90,22 +90,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.Use(async (context, next) =>
-{
-    var authHeader = context.Request.Headers["Authorization"].ToString();
-    Console.WriteLine($"[Middleware] Auth Header completo: {authHeader}");
-    Console.WriteLine($"[Middleware] Length: {authHeader.Length}");
 
-    if (authHeader.StartsWith("Bearer "))
-    {
-        var token = authHeader.Substring(7);
-        Console.WriteLine($"[Middleware] Token length: {token.Length}");
-        Console.WriteLine($"[Middleware] Pontos no token: {token.Count(c => c == '.')}");
-        Console.WriteLine($"[Middleware] Token completo: {token}");
-    }
-
-    await next();
-});
 app.UseAuthentication();
 app.UseAuthorization();
 

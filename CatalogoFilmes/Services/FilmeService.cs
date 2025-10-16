@@ -115,7 +115,7 @@ namespace CatalogoFilmes.Services
             {
                 return ApiResponse<FilmeDTO>.Fail("Filme não encontrado");
             }
-            // Atualiza os valores da entidade já rastreada
+
             filmeExistente.Titulo = filme.Titulo;
             filmeExistente.Genero = filme.Genero;
             filmeExistente.Ano = filme.Ano;

@@ -20,7 +20,6 @@ namespace CatalogoFilmes.Repositories
         {
             var query = _context.Filmes.AsQueryable();
 
-            // Aplicar filtros apenas se fornecidos
             if (!string.IsNullOrWhiteSpace(filter.Titulo))
             {
                 query = query.Where(f => f.Titulo.ToLower().Contains(filter.Titulo.ToLower()));
@@ -36,10 +35,8 @@ namespace CatalogoFilmes.Repositories
                 query = query.Where(f => f.Ano == filter.Ano.Value);
             }
 
-            // Contar total antes da paginação
             var totalCount = await query.CountAsync().ConfigureAwait(false);
 
-            // Aplicar paginação e ordenação
             var filmes = await query
                 .OrderByDescending(f => f.Ano)
                 .ThenBy(f => f.Titulo)
