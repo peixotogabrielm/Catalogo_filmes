@@ -16,5 +16,7 @@ namespace CatalogoFilmes.Repositories.Interfaces
         Task<String?> GetGeneroMaisComum();
         Task<int?> GetAnoMaisRecente();
         Task<int?> GetAnoMaisAntigo();
+        Task<string?> GetUsuarioMaisAdicionouFilme();
+        Task<string?> QuemAddFilme();
     }
 }

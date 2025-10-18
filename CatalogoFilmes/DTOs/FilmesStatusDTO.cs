@@ -6,5 +6,6 @@
         public string GeneroMaisComum { get; set; }
         public int? AnoMaisRecente { get; set; }
         public int? AnoMaisAntigo { get; set; }
+        public string QuemAddMaisFilmesNoCatalogo { get; set; }
     }
 }

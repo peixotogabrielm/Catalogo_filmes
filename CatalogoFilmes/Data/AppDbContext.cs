@@ -30,14 +30,24 @@ namespace CatalogoFilmes.Data
 
                 entity.HasIndex(f => f.Titulo)
                 .IsUnique();
+
+                entity.HasOne(f => f.CriadoPor)           
+                .WithMany(u => u.FilmesCriados)       
+                .HasForeignKey(f => f.CriadoPorId)    
+                .OnDelete(DeleteBehavior.Cascade);
+
+               
             });
+
             modelBuilder.Entity<Usuario>(entity =>
             {
                 entity.Property(u => u.Role)
                     .HasDefaultValue("User");
 
+
                 entity.Property(u => u.DataCriacao)
                     .HasDefaultValueSql("GETUTCDATE()"); 
+
                 entity.Property(u => u.Id)
                     .HasDefaultValueSql("NEWID()");
 

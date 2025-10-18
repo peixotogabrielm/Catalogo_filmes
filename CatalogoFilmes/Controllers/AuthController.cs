@@ -1,8 +1,12 @@
-﻿using CatalogoFilmes.DTOs;
+﻿using Azure;
+using CatalogoFilmes.DTOs;
+using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Models;
 using CatalogoFilmes.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace CatalogoFilmes.Controllers
 {
@@ -17,27 +21,34 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpPost("Login")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login(LoginDTO dto)
+        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<string>))]
+        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessStringExample))]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, Type = typeof(Result<string>))]
+        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(ResultUnauthorizedStringExample))]
+        public async Task<IActionResult> Login([FromBody] LoginDTO dto)
         {
             var response = await _authService.LoginAsync(dto);
-            if (!response.Sucesso)
+            if (response.StatusCode == 401)
             {
-                return Unauthorized(new {error = response.Mensagem});
+                return Unauthorized(response.Mensagem);
             }
-            return Ok(new {token = response.Data});
+            return Ok(response.Data);
         }
 
         [HttpPost("Registrar")]
         [AllowAnonymous]
-        public async Task<IActionResult> Registrar(RegistroDTO dto)
+        [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(Result<string>))]
+        [SwaggerResponseExample(StatusCodes.Status201Created, typeof(ResultSuccessStringExample))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<string>))]
+        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(ResultBadRequestStringExample))]
+        public async Task<IActionResult> Registrar([FromBody] RegistroDTO dto)
         {
             var response = await _authService.RegistrarAsync(dto);
-            if (!response.Sucesso)
+            if (response.StatusCode == 400)
             {
-                return BadRequest(new { error = response.Mensagem });
+                return BadRequest(response.Mensagem);
             }
-            return Created("", new {mensagem = response.Data});
+            return Created("", response.Data);
         }
     }
 }

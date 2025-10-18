@@ -7,5 +7,6 @@
         public int TotalAdmins { get; set; }
         public Dictionary<string, int> FilmesPorGenero { get; set; }
         public Dictionary<int, int> FilmesPorAno { get; set; }
+        public string? UsuarioMaisAddFilmesNoCatalogo { get; set; }
     }
 }

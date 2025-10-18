@@ -5,8 +5,8 @@ namespace CatalogoFilmes.Services.Interfaces
 {
     public interface IAuthService
     {
-        Task<ApiResponse<string>> RegistrarAsync(RegistroDTO request);
-        Task<ApiResponse<string>> LoginAsync(LoginDTO request);
-        Task<ApiResponse<string>> RegistroAdmin(RegistroDTO request);
+        Task<Result<string>> RegistrarAsync(RegistroDTO request);
+        Task<Result<string>> LoginAsync(LoginDTO request);
+        Task<Result<string>> RegistroAdmin(RegistroDTO request, string chaveSecreta);
     }
 }

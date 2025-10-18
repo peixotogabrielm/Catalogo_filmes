@@ -16,7 +16,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.6" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="9.0.1" />
   </ItemGroup>
 
 </Project>

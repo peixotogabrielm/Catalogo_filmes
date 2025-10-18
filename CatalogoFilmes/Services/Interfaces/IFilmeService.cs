@@ -5,10 +5,10 @@ namespace CatalogoFilmes.Services.Interfaces
 {
     public interface IFilmeService
     {
-        Task<ApiResponse<ResultadoPaginaDTO<FilmeDTO>>> GetAllFilmes(FilmeFiltroDTO filter);
-        Task<ApiResponse<FilmeDTO>> GetFilmeById(Guid id);
-        Task<ApiResponse<FilmeDTO>> AddFilme(CriarFilmeDTO filme);
-        Task<ApiResponse<FilmeDTO>> UpdateFilme(FilmeUpdateDTO filme);
-        Task<ApiResponse<bool>> DeleteFilme(Guid id);
+        Task<Result<ResultadoPaginaDTO<FilmeDTO>>> GetAllFilmes(FilmeFiltroDTO filter);
+        Task<Result<FilmeDTO>> GetFilmeById(Guid id);
+        Task<Result<FilmeDTO>> AddFilme(CriarFilmeDTO filme, Guid usuarioId);
+        Task<Result<FilmeDTO>> UpdateFilme(FilmeUpdateDTO filme, Guid idFilme);
+        Task<Result<bool>> DeleteFilme(Guid id);
     }
 }

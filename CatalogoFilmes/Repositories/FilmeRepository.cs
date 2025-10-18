@@ -18,7 +18,7 @@ namespace CatalogoFilmes.Repositories
 
         public async Task<(List<Filme> filmes, int totalCount)> GetAllFilmes(FilmeFiltroDTO filter)
         {
-            var query = _context.Filmes.AsQueryable();
+            var query = _context.Filmes.Include(f => f.CriadoPor).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filter.Titulo))
             {
@@ -29,7 +29,7 @@ namespace CatalogoFilmes.Repositories
             {
                 query = query.Where(f => f.Genero.ToLower().Contains(filter.Genero.ToLower()));
             }
-
+            
             if (filter.Ano.HasValue)
             {
                 query = query.Where(f => f.Ano == filter.Ano.Value);
@@ -44,41 +44,66 @@ namespace CatalogoFilmes.Repositories
                 .Take(filter.PageSize)
                 .ToListAsync()
                 .ConfigureAwait(false);
-
+           
             return (filmes, totalCount);
         }
-        public async Task<Filme> GetFilmeById(Guid id) { 
-            var filme = await _context.Filmes.FindAsync(id).ConfigureAwait(false);
+        public async Task<Filme> GetFilmeById(Guid id) {
+            var filme = await _context.Filmes.Include(f => f.CriadoPor).FirstOrDefaultAsync(f => f.Id == id).ConfigureAwait(false);
+            
             return filme;
         }
         public async Task<Filme> AddFilme(Filme filme) {
-            _context.Filmes.Add(filme); 
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            return filme;
+            var existingFilme = await _context.Filmes
+                .FirstOrDefaultAsync(f => f.Titulo.ToLower() == filme.Titulo.ToLower() && f.Ano == filme.Ano)
+                .ConfigureAwait(false);
+            if (existingFilme is null)
+            {
+                _context.Filmes.Add(filme); 
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                await _context.Entry(filme).Reference(f => f.CriadoPor).LoadAsync().ConfigureAwait(false);
+                return filme;
+
+            }
+            else
+            {
+                return null;
+            }
         }
         public async Task<Filme> UpdateFilme(Filme filme) { 
-            _context.Filmes.Update(filme); 
-            await _context.SaveChangesAsync().ConfigureAwait(false);
-            return filme;
+            var existingFilmeNome = await _context.Filmes
+                .FirstOrDefaultAsync(f => f.Titulo.ToLower() == filme.Titulo.ToLower() && f.Ano == filme.Ano && f.Id != filme.Id)
+                .ConfigureAwait(false);
+            if (existingFilmeNome is null)
+            {
+                _context.Filmes.Update(filme); 
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                return filme;
+
+            }
+            else
+            {
+                return null;
+            }
+
         }
-        public async Task<ApiResponse<bool>> DeleteFilme(Guid id)
+        public async Task<Result<bool>> DeleteFilme(Guid id)
         {
             var filme = await _context.Filmes.FindAsync(id).ConfigureAwait(false);
 
             if (filme == null)
             {
-                return ApiResponse<bool>.Fail("Filme não encontrado");
+                return Result<bool>.Fail(400, "Filme não encontrado");
             }
 
             try
             {
                 _context.Filmes.Remove(filme);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
-                return ApiResponse<bool>.Ok(true);
+                return Result<bool>.Ok(200, true);
             }
             catch (Exception)
             {
-                return ApiResponse<bool>.Fail("Erro ao deletar filme");
+                return Result<bool>.Fail(400,"Erro ao deletar filme");
             }
         }
     }

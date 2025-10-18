@@ -53,7 +53,9 @@ namespace CatalogoFilmes.Repositories
 
         public async Task<(List<Usuario> usuarios, int totalCount)> GetUsuarios(int pageNumber, int pageSize)
         {
-            var query = _context.Usuarios.AsQueryable();
+            var query = _context.Usuarios
+            .Include(u => u.FilmesCriados) // traz os filmes do usuário
+            .AsQueryable();
 
             var totalCount = await query.CountAsync().ConfigureAwait(false);
 
@@ -73,21 +75,25 @@ namespace CatalogoFilmes.Repositories
                 .FindAsync(id);
         }
 
-        public async Task<bool> UpdateUsuarioRole(Guid usuarioId, string novaRole)
-        {
-            var usuario = await _context.Usuarios.FindAsync(usuarioId);
+            public async Task<bool> UpdateUsuarioRole(Guid usuarioId, string novaRole)
+            {
+        
 
-            if (usuario == null)
-                return false;
+                var usuario = await _context.Usuarios.FindAsync(usuarioId).ConfigureAwait(false);
 
-            usuario.Role = novaRole;
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+                if (usuario == null)
+                    return false;
 
-            return true;
-        }
+                usuario.Role = novaRole;
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+
+                return true;
+            }
 
         public async Task<bool> DeleteUsuario(Guid usuarioId)
         {
+            
+
             var usuario = await _context.Usuarios.FindAsync(usuarioId);
 
             if (usuario == null)
@@ -97,6 +103,7 @@ namespace CatalogoFilmes.Repositories
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return true;
+            
         }
 
         public async Task<string?> GetGeneroMaisComum()
@@ -120,6 +127,25 @@ namespace CatalogoFilmes.Repositories
         {
             return await _context.Filmes
                 .MinAsync(f => (int?)f.Ano)
+                .ConfigureAwait(false);
+        }
+        public async Task<string?> GetUsuarioMaisAdicionouFilme()
+        {
+            return await _context.Filmes
+           .Where(f => f.CriadoPor != null) 
+           .GroupBy(f => f.CriadoPor.Nome) 
+           .OrderByDescending(g => g.Count()) 
+           .Select(g => g.Key) 
+           .FirstOrDefaultAsync()
+           .ConfigureAwait(false);
+        }
+
+        public async Task<string?> QuemAddFilme()
+        {
+           return await _context.Filmes
+                .OrderByDescending(f => f.DataCriacao)
+                .Select(f => f.CriadoPor.Nome)
+                .FirstOrDefaultAsync()
                 .ConfigureAwait(false);
         }
     }

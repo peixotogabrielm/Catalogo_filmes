@@ -4,8 +4,6 @@ namespace CatalogoFilmes.DTOs
 {
     public class FilmeUpdateDTO
     {
-        [Required(ErrorMessage = "O ID do filme é obrigatório.")]
-        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "O título é obrigatório.")]
         public string Titulo { get; set; }

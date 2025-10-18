@@ -4,6 +4,7 @@ using CatalogoFilmes.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogoFilmes.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251017233110_AtualizandoErroDasRoles")]
+    partial class AtualizandoErroDasRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,7 +111,7 @@ namespace CatalogoFilmes.Migrations
                     b.HasOne("CatalogoFilmes.Models.Usuario", "CriadoPor")
                         .WithMany("FilmesCriados")
                         .HasForeignKey("CriadoPorId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("CriadoPor");
                 });

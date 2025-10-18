@@ -18,29 +18,29 @@ namespace CatalogoFilmes.Services
             _jwtHelper = jwtHelper;
         }
 
-        public async Task<ApiResponse<string>> LoginAsync(LoginDTO request)
+        public async Task<Result<string>> LoginAsync(LoginDTO request)
         {
             
             var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == request.Email);
             if (usuario == null || !BCrypt.Net.BCrypt.Verify(request.Senha, usuario.SenhaHash))
             {
-                return ApiResponse<string>.Fail("Email ou senha inválidos");
+                return Result<string>.Fail(401, "Email ou senha inválidos");
             }
 
-            return ApiResponse<string>.Ok(_jwtHelper.GenerateToken(usuario));
+            return Result<string>.Ok(200, _jwtHelper.GenerateToken(usuario));
 
         }
 
-        public async Task<ApiResponse<string>> RegistrarAsync(RegistroDTO request)
+        public async Task<Result<string>> RegistrarAsync(RegistroDTO request)
         {
             if(string.IsNullOrEmpty(request.Nome) || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Senha))
             {
-                return ApiResponse<string>.Fail("Nome, email e senha são obrigatórios");
+                return Result<string>.Fail(400, "Nome, email e senha são obrigatórios");
             }
             var isEmailExist = await _context.Usuarios.AnyAsync(u => u.Email == request.Email);
             if (isEmailExist)
             {
-                return ApiResponse<string>.Fail("Email já está em uso");
+                return Result<string>.Fail(400, "Email já está em uso");
             }
             var user = new Usuario
             {
@@ -48,24 +48,28 @@ namespace CatalogoFilmes.Services
                 Email = request.Email,
                 SenhaHash = BCrypt.Net.BCrypt.HashPassword(request.Senha),
                 Role = "User",
-                DataCriacao = DateTime.UtcNow
             };
             _context.Usuarios.Add(user);
             await _context.SaveChangesAsync();
-            return ApiResponse<string>.Ok("Conta criada com sucesso!");
+            return Result<string>.Ok(200, "Conta criada com sucesso!");
         }
 
-        public async Task<ApiResponse<string>> RegistroAdmin(RegistroDTO request)
+        public async Task<Result<string>> RegistroAdmin(RegistroDTO request, string chaveSecreta)
         {
+            if (chaveSecreta != "lM3ULXRHup")
+            {
+                return Result<string>.Fail(401, "Chave secreta inválida");
+            }
+
             if (string.IsNullOrEmpty(request.Nome) || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Senha))
             {
-                return ApiResponse<string>.Fail("Nome, email e senha são obrigatórios");
+                return Result<string>.Fail(400,"Nome, email e senha são obrigatórios");
             }
 
             var isEmailExist = await _context.Usuarios.AnyAsync(u => u.Email == request.Email);
             if (isEmailExist)
             {
-                return ApiResponse<string>.Fail("Email já está em uso");
+                return Result<string>.Fail(401, "Email já está em uso");
             }
             var user = new Usuario
             {
@@ -77,7 +81,7 @@ namespace CatalogoFilmes.Services
             };
             _context.Usuarios.Add(user);
             await _context.SaveChangesAsync();
-            return ApiResponse<string>.Ok("Conta criada com sucesso!");
+            return Result<string>.Ok(200,"Conta criada com sucesso!");
         }
     }
 }

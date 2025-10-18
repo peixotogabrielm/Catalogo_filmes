@@ -1,5 +1,6 @@
 ﻿using CatalogoFilmes.DTOs;
 using CatalogoFilmes.Helpers;
+using CatalogoFilmes.Models;
 using CatalogoFilmes.Repositories;
 using CatalogoFilmes.Repositories.Interfaces;
 using CatalogoFilmes.Services.Interfaces;
@@ -15,7 +16,7 @@ namespace CatalogoFilmes.Services
             _adminRepository = adminRepository;
         }
 
-        public async Task<ApiResponse<DashboardStatusDTO>> GetDashboardStats()
+        public async Task<Result<DashboardStatusDTO>> GetDashboardStats()
         {
             try
             {
@@ -24,6 +25,8 @@ namespace CatalogoFilmes.Services
                 var totalAdmins = await _adminRepository.GetTotalAdmins().ConfigureAwait(false);
                 var filmesPorGenero = await _adminRepository.GetFilmesPorGenero().ConfigureAwait(false);
                 var filmesPorAno = await _adminRepository.GetFilmesPorAno().ConfigureAwait(false);
+                var usuarioMaisAddFilmes = await _adminRepository.GetUsuarioMaisAdicionouFilme().ConfigureAwait(false);
+
 
                 var stats = new DashboardStatusDTO
                 {
@@ -31,30 +34,41 @@ namespace CatalogoFilmes.Services
                     TotalUsuarios = totalUsuarios,
                     TotalAdmins = totalAdmins,
                     FilmesPorGenero = filmesPorGenero,
-                    FilmesPorAno = filmesPorAno
+                    FilmesPorAno = filmesPorAno,
+                    UsuarioMaisAddFilmesNoCatalogo = usuarioMaisAddFilmes
                 };
 
-                return ApiResponse<DashboardStatusDTO>.Ok(stats);
+                return Result<DashboardStatusDTO>.Ok(200, stats);
             }
             catch (Exception ex)
             {
-                return ApiResponse<DashboardStatusDTO>.Fail($"Erro ao obter estatísticas: {ex.Message}");
+                return Result<DashboardStatusDTO>.Fail(400, $"Erro ao obter estatísticas: {ex.Message}");
             }
         }
 
-        public async Task<ApiResponse<ResultadoPaginaDTO<ListaUsuarioDTO>>> GetUsuarios(int pageNumber = 1, int pageSize = 20)
+        public async Task<Result<ResultadoPaginaDTO<ListaUsuarioDTO>>> GetUsuarios(int pageNumber = 1, int pageSize = 20)
         {
             try
             {
                 var (usuarios, totalCount) = await _adminRepository.GetUsuarios(pageNumber, pageSize).ConfigureAwait(false);
-
+                if(usuarios.Count == 0 && totalCount == 0)
+                {
+                    return Result<ResultadoPaginaDTO<ListaUsuarioDTO>>.Ok(204, new ResultadoPaginaDTO<ListaUsuarioDTO>
+                    {
+                        Items = new List<ListaUsuarioDTO>(),
+                        TotalItems = 0,
+                        PageNumber = pageNumber,
+                        PageSize = pageSize
+                    });
+                }
                 var usuarioDTOs = usuarios.Select(u => new ListaUsuarioDTO
                 {
                     Id = u.Id,
                     Nome = u.Nome,
                     Email = u.Email,
                     Role = u.Role,
-                    DataCriacao = u.DataCriacao
+                    DataCriacao = u.DataCriacao,
+                    FilmesAdicionados = u.FilmesCriados.Count()
                 }).ToList();
 
                 var pagedResult = new ResultadoPaginaDTO<ListaUsuarioDTO>
@@ -65,63 +79,63 @@ namespace CatalogoFilmes.Services
                     PageSize = pageSize
                 };
 
-                return ApiResponse<ResultadoPaginaDTO<ListaUsuarioDTO>>.Ok(pagedResult);
+                return Result<ResultadoPaginaDTO<ListaUsuarioDTO>>.Ok(200, pagedResult);
             }
             catch (Exception ex)
             {
-                return ApiResponse<ResultadoPaginaDTO<ListaUsuarioDTO>>.Fail($"Erro ao listar usuários: {ex.Message}");
+                return Result<ResultadoPaginaDTO<ListaUsuarioDTO>>.Fail(400, $"Erro ao listar usuários: {ex.Message}");
             }
         }
 
-        public async Task<ApiResponse<string>> UpdateUserRole(UpdateRoleDTO dto)
+        public async Task<Result<string>> UpdateUserRole(UpdateRoleDTO dto)
         {
             try
             {
                 if (dto.NovaRole != "Admin" && dto.NovaRole != "User")
                 {
-                    return ApiResponse<string>.Fail("Role inválida. Use 'Admin' ou 'User'.");
+                    return Result<string>.Fail(401, "Role inválida. Use 'Admin' ou 'User'.");
                 }
 
                 var sucesso = await _adminRepository.UpdateUsuarioRole(dto.UsuarioId, dto.NovaRole).ConfigureAwait(false);
 
                 if (!sucesso)
                 {
-                    return ApiResponse<string>.Fail("Usuário não encontrado.");
+                    return Result<string>.Fail(404, "Usuário não encontrado.");
                 }
 
-                return ApiResponse<string>.Ok($"Role do usuário atualizada para {dto.NovaRole}");
+                return Result<string>.Ok(200, $"Role do usuário atualizada para {dto.NovaRole}");
             }
             catch (Exception ex)
             {
-                return ApiResponse<string>.Fail($"Erro ao atualizar role: {ex.Message}");
+                return Result<string>.Fail(400, $"Erro ao atualizar role: {ex.Message}");
             }
         }
 
-        public async Task<ApiResponse<string>> DeleteUsuario(Guid usuarioId, string currentUserId)
+        public async Task<Result<string>> DeleteUsuario(Guid usuarioId, string currentUserId)
         {
             try
             {
                 if (currentUserId == usuarioId.ToString())
                 {
-                    return ApiResponse<string>.Fail("Você não pode deletar sua própria conta.");
+                    return Result<string>.Fail(401, "Você não pode deletar sua própria conta.");
                 }
 
                 var sucesso = await _adminRepository.DeleteUsuario(usuarioId).ConfigureAwait(false);
 
                 if (!sucesso)
                 {
-                    return ApiResponse<string>.Fail("Usuário não encontrado.");
+                    return Result<string>.Fail(404, "Usuário não encontrado.");
                 }
 
-                return ApiResponse<string>.Ok("Usuário deletado com sucesso.");
+                return Result<string>.Ok(200, "Usuário deletado com sucesso.");
             }
             catch (Exception ex)
             {
-                return ApiResponse<string>.Fail($"Erro ao deletar usuário: {ex.Message}");
+                return Result<string>.Fail(400, $"Erro ao deletar usuário: {ex.Message}");
             }
         }
 
-        public async Task<ApiResponse<FilmesStatusDTO>> GetFilmesStats()
+        public async Task<Result<FilmesStatusDTO>> GetFilmesStats()
         {
             try
             {
@@ -129,20 +143,22 @@ namespace CatalogoFilmes.Services
                 var generoMaisComum = await _adminRepository.GetGeneroMaisComum().ConfigureAwait(false);
                 var anoMaisRecente = await _adminRepository.GetAnoMaisRecente().ConfigureAwait(false);
                 var anoMaisAntigo = await _adminRepository.GetAnoMaisAntigo().ConfigureAwait(false);
+                var quemAdd = await _adminRepository.QuemAddFilme().ConfigureAwait(false);
 
                 var stats = new FilmesStatusDTO
                 {
                     TotalFilmes = totalFilmes,
                     GeneroMaisComum = generoMaisComum ?? "N/A",
                     AnoMaisRecente = anoMaisRecente,
-                    AnoMaisAntigo = anoMaisAntigo
+                    AnoMaisAntigo = anoMaisAntigo,
+                    QuemAddMaisFilmesNoCatalogo = quemAdd ?? "N/A"
                 };
 
-                return ApiResponse<FilmesStatusDTO>.Ok(stats);
+                return Result<FilmesStatusDTO>.Ok(200, stats);
             }
             catch (Exception ex)
             {
-                return ApiResponse<FilmesStatusDTO>.Fail($"Erro ao obter estatísticas de filmes: {ex.Message}");
+                return Result<FilmesStatusDTO>.Fail(400, $"Erro ao obter estatísticas de filmes: {ex.Message}");
             }
         }
     }
