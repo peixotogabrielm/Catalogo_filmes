@@ -21,6 +21,9 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpPost("Login")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [AllowAnonymous]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<string>))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessStringExample))]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, Type = typeof(Result<string>))]
@@ -36,6 +39,8 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpPost("Registrar")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
         [AllowAnonymous]
         [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(Result<string>))]
         [SwaggerResponseExample(StatusCodes.Status201Created, typeof(ResultSuccessStringExample))]

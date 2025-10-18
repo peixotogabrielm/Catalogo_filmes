@@ -25,6 +25,8 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpPost("RegistrarAdmin")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
         [AllowAnonymous]
         [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(Result<string>))]
         [SwaggerResponseExample(StatusCodes.Status201Created, typeof(ResultCreatedStringExample))]
@@ -50,6 +52,7 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpGet("Dashboard")]
+        [Produces("application/json")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<DashboardStatusDTO>))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessDashboardStatusDTOExample))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<DashboardStatusDTO>))]
@@ -67,6 +70,7 @@ namespace CatalogoFilmes.Controllers
         }
       
         [HttpGet("Usuarios")]
+        [Produces("application/json")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<ResultadoPaginaDTO<ListaUsuarioDTO>>))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessResultadoPaginaUsuarioDTOExample))]
         [SwaggerResponse(StatusCodes.Status204NoContent, Type = typeof(Result<ResultadoPaginaDTO<ListaUsuarioDTO>>))]
@@ -89,6 +93,8 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpPut("Usuarios/role")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<string>))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessStringExample))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<string>))]
@@ -114,7 +120,9 @@ namespace CatalogoFilmes.Controllers
 
             return Ok(response.Data);
         }
+
         [HttpDelete("Usuarios/{id}")]
+        [Produces("application/json")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<string>))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessStringExample))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<string>))]
@@ -145,6 +153,7 @@ namespace CatalogoFilmes.Controllers
             return Ok(response.Data);
         }
         [HttpGet("Filmes/stats")]
+        [Produces("application/json")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<FilmesStatusDTO>))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessFilmesStatusDTOExample))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<FilmesStatusDTO>))]

@@ -26,6 +26,7 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpGet("GetAllFilmes")]
+        [Produces("application/json")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<ResultadoPaginaDTO<FilmeDTO>>))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessPaginaFilmeDTOExample))]
         [SwaggerResponse(StatusCodes.Status204NoContent, Type = typeof(Result<ResultadoPaginaDTO<FilmeDTO>>))]
@@ -49,6 +50,7 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpGet("GetFilmeById/{id}")]
+        [Produces("application/json")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<FilmeDTO>))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessFilmeDTOExample))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<FilmeDTO>))]
@@ -70,6 +72,8 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpPost("AddFilme")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
         [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(Result<FilmeDTO>))]
         [SwaggerResponseExample(StatusCodes.Status201Created, typeof(ResultCreatedFilmeDTOExample))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<FilmeDTO>))]
@@ -88,6 +92,8 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpPut("UpdateFilme")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<FilmeDTO>))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessFilmeDTOExample))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<FilmeDTO>))]
@@ -108,6 +114,7 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpDelete("DeleteFilme/{id}")]
+        [Produces("application/json")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<bool>))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessBoolExample))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<bool>))]
