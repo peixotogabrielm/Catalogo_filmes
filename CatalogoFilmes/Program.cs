@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Scalar.AspNetCore;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
 
@@ -45,7 +46,6 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
-
 builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -100,12 +100,17 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
+    // app.UseSwaggerUI(c =>
+    // {
+    //     c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Catalogo de Filmes v1");
+    // });
+    app.MapScalarApiReference(options =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API Catalogo de Filmes v1");
+        // Como você usa Swashbuckle, a URL padrão do JSON é esta:
+        options.OpenApiRoutePattern = "/swagger/v1/swagger.json";
     });
 }
-
+   
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

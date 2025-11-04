@@ -1,0 +1,7 @@
+{
+  "dotnet.defaultSolution": "CatalogoFilmes.csproj",
+  "launch": {
+    "configurations": [],
+    "compounds": []
+  }
+}
