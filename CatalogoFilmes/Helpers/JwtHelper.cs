@@ -19,11 +19,11 @@ namespace CatalogoFilmes.Helpers
         {
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-            new Claim(ClaimTypes.Email, usuario.Email),
-            new Claim(ClaimTypes.Name, usuario.Nome),
-            new Claim(ClaimTypes.Role, usuario.Role)
-        };
+                new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
+                new Claim(ClaimTypes.Email, usuario.Email),
+                new Claim(ClaimTypes.Name, usuario.Nome),
+                new Claim(ClaimTypes.Role, usuario.Role)
+            };
 
             var secret = _config["Jwt:Secret"] ?? throw new InvalidOperationException("Configuração Jwt:Secret não encontrada.");
             var issuer = _config["Jwt:Issuer"] ?? throw new InvalidOperationException("Configuração Jwt:Issuer não encontrada.");
