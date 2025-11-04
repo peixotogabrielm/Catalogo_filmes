@@ -38,22 +38,6 @@ namespace CatalogoFilmes.Controllers
             return Ok(response.Data);
         }
 
-        [HttpPost("Registrar")]
-        [Produces("application/json")]
-        [Consumes("application/json")]
-        [AllowAnonymous]
-        [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status201Created, typeof(ResultSuccessStringExample))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(ResultBadRequestStringExample))]
-        public async Task<IActionResult> Registrar([FromBody] RegistroDTO dto)
-        {
-            var response = await _authService.RegistrarAsync(dto);
-            if (response.StatusCode == 400)
-            {
-                return BadRequest(response.Mensagem);
-            }
-            return Created("", response.Data);
-        }
+        
     }
 }

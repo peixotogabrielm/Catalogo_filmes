@@ -31,28 +31,7 @@ namespace CatalogoFilmes.Services
 
         }
 
-        public async Task<Result<string>> RegistrarAsync(RegistroDTO request)
-        {
-            if(string.IsNullOrEmpty(request.Nome) || string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Senha))
-            {
-                return Result<string>.Fail(400, "Nome, email e senha são obrigatórios");
-            }
-            var isEmailExist = await _context.Usuarios.AnyAsync(u => u.Email == request.Email);
-            if (isEmailExist)
-            {
-                return Result<string>.Fail(400, "Email já está em uso");
-            }
-            var user = new Usuario
-            {
-                Nome = request.Nome,
-                Email = request.Email,
-                SenhaHash = BCrypt.Net.BCrypt.HashPassword(request.Senha),
-                Role = "User",
-            };
-            _context.Usuarios.Add(user);
-            await _context.SaveChangesAsync();
-            return Result<string>.Ok(200, "Conta criada com sucesso!");
-        }
+       
 
         public async Task<Result<string>> RegistroAdmin(RegistroDTO request, string chaveSecreta)
         {
