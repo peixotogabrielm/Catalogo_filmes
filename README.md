@@ -35,9 +35,12 @@ Uma API RESTful desenvolvida em .NET 8 para gerenciamento de um catálogo de fil
 
 ## 📋 Pré-requisitos
 
-- .NET 8 SDK
-- SQL Server (Local ou Azure)
-- Visual Studio 2022 ou VS Code
+- **.NET 8 SDK** ([Download aqui](https://dotnet.microsoft.com/download/dotnet/8.0))
+- **SQL Server** (Local, LocalDB ou Azure)
+- **Visual Studio Code** com as extensões:
+  - C# Dev Kit
+  - C# Extension
+  - .NET Extension Pack
 
 ## ⚙️ Configuração e Instalação
 
@@ -48,40 +51,191 @@ cd Catalogo_filmes
 ```
 
 ### 2. Configure o banco de dados
-Edite o arquivo `appsettings.json` ou `appsettings.Development.json`:
+Edite o arquivo `CatalogoFilmes/appsettings.Development.json`:
 
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=CatalogoFilmesDB;Trusted_Connection=true;TrustServerCertificate=true;"
+    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=CatalogoFilmesDB;Trusted_Connection=true;TrustServerCertificate=true;"
   },
   "Jwt": {
-    "Secret": "sua-chave-secreta-super-segura-aqui",
+    "Secret": "minha-super-chave-secreta-jwt-2024-catalogo-filmes-api",
     "Issuer": "CatalogoFilmesAPI",
     "Audience": "CatalogoFilmesUsers"
-  }
+  },
+  "AdminSecretKey": "lM3ULXRHup"
 }
 ```
 
-### 3. Execute as migrações
+### 3. Restaure as dependências
 ```bash
 cd CatalogoFilmes
+dotnet restore
+```
+
+### 4. Execute as migrações do banco
+```bash
 dotnet ef database update
 ```
 
-### 4. Execute a aplicação
+### 5. Execute a aplicação
+
+#### Opção A: Terminal (Simples)
 ```bash
 dotnet run
 ```
 
-A API estará disponível em `https://localhost:7224`
+#### Opção B: VS Code (Recomendado)
+1. Abra o projeto no VS Code
+2. Pressione `Ctrl+Shift+P` e digite ">.NET: Generate Assets for Build and Debug"
+3. Pressione `F5` para executar com debug, ou `Ctrl+F5` para executar sem debug
 
-## 📚 Documentação da API
+A API estará disponível em:
+- **HTTP**: `http://localhost:5103`
+- **HTTPS**: `https://localhost:7224`
+- **Swagger UI**: `https://localhost:7224/swagger`
 
-### Base URL
+## � Configuração do VS Code
+
+### Arquivos de Configuração Necessários
+
+O projeto já inclui os arquivos de configuração para VS Code:
+
+#### `.vscode/launch.json` (Debug Configuration)
+```json
+{
+  "configurations": [
+    {
+      "name": "Launch CatalogoFilmes",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "${workspaceFolder}/CatalogoFilmes/bin/Debug/net8.0/CatalogoFilmes.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/CatalogoFilmes",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "preLaunchTask": "build"
+    }
+  ]
+}
 ```
-https://localhost:7224/api
+
+#### `.vscode/tasks.json` (Build Tasks)
+```json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/CatalogoFilmes/CatalogoFilmes.csproj",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": "build",
+      "presentation": {
+        "reveal": "silent"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "run",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/CatalogoFilmes/CatalogoFilmes.csproj"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}
 ```
+
+### Como Executar no VS Code
+
+1. **F5** - Executar com Debug (recomendado para desenvolvimento)
+2. **Ctrl+F5** - Executar sem Debug (mais rápido)
+3. **Ctrl+Shift+P** → "Tasks: Run Task" → "run" - Executar via task
+
+## 🔍 Troubleshooting
+
+### Problemas Comuns
+
+#### 1. "dotnet command not found"
+```bash
+# Verifique se o .NET 8 SDK está instalado
+dotnet --version
+
+# Se não estiver instalado, baixe em:
+# https://dotnet.microsoft.com/download/dotnet/8.0
+```
+
+#### 2. Erro de conexão com banco de dados
+```bash
+# Verifique se o SQL Server LocalDB está rodando
+sqllocaldb info mssqllocaldb
+
+# Se não estiver, inicie:
+sqllocaldb start mssqllocaldb
+```
+
+#### 3. Erro de certificado HTTPS
+```bash
+# Confie no certificado de desenvolvimento
+dotnet dev-certs https --trust
+```
+
+#### 4. Porta já em uso
+- Altere as portas em `Properties/launchSettings.json`
+- Ou pare outros processos usando as portas 5103/7224
+
+#### 5. Problemas com JWT
+- Verifique se a chave secreta no `appsettings.Development.json` tem pelo menos 32 caracteres
+- Certifique-se de que não há espaços extras na configuração
+
+### Logs e Debug
+
+Para ver logs detalhados, edite o `appsettings.Development.json`:
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning",
+      "Microsoft.EntityFrameworkCore": "Information"
+    }
+  }
+}
+```
+
+## �📚 Documentação da API
+
+### URLs Base
+- **Development HTTP**: `http://localhost:5103/api`
+- **Development HTTPS**: `https://localhost:7224/api`
+- **Swagger UI**: `https://localhost:7224/swagger`
 
 ### 🔓 Endpoints Públicos
 
@@ -186,6 +340,48 @@ curl -X GET "https://localhost:7224/api/filmes/GetAllFilmes" \
 ### Swagger UI
 Acesse `https://localhost:7224/swagger` para testar a API interativamente.
 
+## 📊 Estrutura de Resposta
+
+### Padrão de Response da API
+
+Todas as respostas seguem o padrão `Result<T>`:
+
+```json
+{
+  "success": true,
+  "mensagem": "Operação realizada com sucesso",
+  "data": {
+    // Dados retornados aqui
+  }
+}
+```
+
+### Resposta de Erro
+
+```json
+{
+  "success": false,
+  "mensagem": "Descrição do erro",
+  "data": null
+}
+```
+
+### Respostas Paginadas
+
+```json
+{
+  "success": true,
+  "mensagem": "Filmes recuperados com sucesso",
+  "data": {
+    "items": [...],
+    "totalCount": 100,
+    "pageNumber": 1,
+    "pageSize": 10,
+    "totalPages": 10
+  }
+}
+```
+
 ## 📊 Modelo de Dados
 
 ### Filme
@@ -212,6 +408,44 @@ public class Usuario
     public DateTime DataCriacao { get; set; }
 }
 ```
+
+## 🧪 Testando a API
+
+### Primeiro Uso - Criando um Administrador
+
+1. **Registre um administrador** (usando a chave secreta):
+```bash
+curl -X POST "https://localhost:7224/api/admin/RegistrarAdmin?chaveSecreta=lM3ULXRHup" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nome": "Admin Principal",
+    "email": "admin@catalogo.com",
+    "senha": "Admin123!"
+  }'
+```
+
+2. **Faça login** para obter o token JWT:
+```bash
+curl -X POST "https://localhost:7224/api/auth/login" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "admin@catalogo.com",
+    "senha": "Admin123!"
+  }'
+```
+
+3. **Use o token** para acessar endpoints protegidos:
+```bash
+curl -X GET "https://localhost:7224/api/admin/Dashboard" \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
+
+### Testando com Swagger UI
+
+1. Abra `https://localhost:7224/swagger`
+2. Clique em "Authorize" (🔒)
+3. Digite: `Bearer SEU_TOKEN_JWT`
+4. Agora você pode testar todos os endpoints!
 
 ## 🧪 Exemplos de Uso
 
