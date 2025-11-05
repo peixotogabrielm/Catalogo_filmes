@@ -9,60 +9,13 @@ namespace CatalogoFilmes.Data
 
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Filme> Filmes { get; set; }
+        public DbSet<Roles> Roles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-
-            modelBuilder.Entity<Filme>(entity =>
-            {
-                entity.Property(f => f.Id)
-                    .HasDefaultValueSql("NEWID()");
-
-                entity.Property(f => f.Titulo)
-                .IsRequired();
-
-                entity.Property(f => f.Genero)
-                .IsRequired();
-
-                entity.Property(f => f.Ano)
-                .IsRequired();
-
-                entity.HasIndex(f => f.Titulo)
-                .IsUnique();
-
-                entity.HasOne(f => f.CriadoPor)           
-                .WithMany(u => u.FilmesCriados)       
-                .HasForeignKey(f => f.CriadoPorId)    
-                .OnDelete(DeleteBehavior.Cascade);
-
-               
-            });
-
-            modelBuilder.Entity<Usuario>(entity =>
-            {
-                entity.Property(u => u.Role)
-                    .HasDefaultValue("User");
-
-
-                entity.Property(u => u.DataCriacao)
-                    .HasDefaultValueSql("GETUTCDATE()"); 
-
-                entity.Property(u => u.Id)
-                    .HasDefaultValueSql("NEWID()");
-
-                entity.Property(u => u.Nome)
-                    .IsRequired();
-
-                entity.Property(u => u.Email)
-                    .IsRequired();
-
-                entity.Property(u => u.SenhaHash)
-                .IsRequired();
-
-                entity.HasIndex(u => u.Email)
-                .IsUnique();
-            });
+            modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
         }
+ 
     }
 }

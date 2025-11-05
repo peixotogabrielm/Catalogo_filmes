@@ -3,10 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CatalogoFilmes.Models
 {
-    public class Filme
+    public class Filme : Base
     {
-        [Key]
-        public Guid Id { get; set; }
+        
         [Required]
         [MaxLength(200)]
         public string Titulo { get; set; }
@@ -17,8 +16,10 @@ namespace CatalogoFilmes.Models
         [Range(1800, 2100)]
         public int Ano { get; set; }
         [MaxLength(2000)]
+        [Required]
         public string? Sinopse { get; set; }
-        public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
+        [Required]
+        public TimeSpan Duracao { get; set; }
         public Guid? CriadoPorId { get; set; }
         [ForeignKey("CriadoPorId")]
         public Usuario CriadoPor { get; set; }

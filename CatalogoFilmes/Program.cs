@@ -1,6 +1,7 @@
 ﻿using CatalogoFilmes;
 using CatalogoFilmes.Data;
 using CatalogoFilmes.Helpers;
+using CatalogoFilmes.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -47,6 +48,7 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
+
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -110,7 +112,11 @@ if (app.Environment.IsDevelopment())
         options.OpenApiRoutePattern = "/swagger/v1/swagger.json";
     });
 }
-   
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await SeedManager.Seed(services);
+}
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

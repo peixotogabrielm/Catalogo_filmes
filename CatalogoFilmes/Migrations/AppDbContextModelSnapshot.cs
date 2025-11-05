@@ -27,6 +27,7 @@ namespace CatalogoFilmes.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
                         .HasDefaultValueSql("NEWID()");
 
                     b.Property<int>("Ano")
@@ -36,14 +37,20 @@ namespace CatalogoFilmes.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("DataCriacao")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<TimeSpan>("Duracao")
+                        .HasColumnType("time");
 
                     b.Property<string>("Genero")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Sinopse")
+                        .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
@@ -59,7 +66,30 @@ namespace CatalogoFilmes.Migrations
                     b.HasIndex("Titulo")
                         .IsUnique();
 
-                    b.ToTable("Filmes");
+                    b.ToTable("Filmes", (string)null);
+                });
+
+            modelBuilder.Entity("CatalogoFilmes.Models.Roles", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("CatalogoFilmes.Models.Usuario", b =>
@@ -67,7 +97,18 @@ namespace CatalogoFilmes.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
                         .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("CPF")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("Celular")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("DataCriacao")
                         .ValueGeneratedOnAdd()
@@ -84,12 +125,8 @@ namespace CatalogoFilmes.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(25)
-                        .HasColumnType("nvarchar(25)")
-                        .HasDefaultValue("User");
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("SenhaHash")
                         .IsRequired()
@@ -97,10 +134,15 @@ namespace CatalogoFilmes.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CPF")
+                        .IsUnique();
+
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Usuarios");
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("CatalogoFilmes.Models.Filme", b =>
@@ -111,6 +153,22 @@ namespace CatalogoFilmes.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("CriadoPor");
+                });
+
+            modelBuilder.Entity("CatalogoFilmes.Models.Usuario", b =>
+                {
+                    b.HasOne("CatalogoFilmes.Models.Roles", "Role")
+                        .WithMany("Usuarios")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("CatalogoFilmes.Models.Roles", b =>
+                {
+                    b.Navigation("Usuarios");
                 });
 
             modelBuilder.Entity("CatalogoFilmes.Models.Usuario", b =>

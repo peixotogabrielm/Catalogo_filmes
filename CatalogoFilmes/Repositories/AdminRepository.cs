@@ -77,7 +77,7 @@ namespace CatalogoFilmes.Repositories
             if (usuario == null)
                 return false;
 
-            usuario.Role = novaRole;
+            usuario.Role.Role = novaRole;
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return true;

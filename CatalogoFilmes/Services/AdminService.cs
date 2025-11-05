@@ -61,7 +61,7 @@ namespace CatalogoFilmes.Services
                     Id = u.Id,
                     Nome = u.Nome,
                     Email = u.Email,
-                    Role = u.Role,
+                    Role = u.Role.Role,
                     DataCriacao = u.DataCriacao,
                     FilmesAdicionados = u.FilmesCriados.Count()
                 }).ToList();

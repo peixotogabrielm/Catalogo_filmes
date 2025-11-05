@@ -2,10 +2,9 @@
 
 namespace CatalogoFilmes.Models
 {
-    public class Usuario
+    public class Usuario : Base
     {
-        [Key]
-        public Guid Id { get; set; }
+     
         [Required]
         [MaxLength(100)]
         public string Nome { get; set; }
@@ -13,12 +12,17 @@ namespace CatalogoFilmes.Models
         [MaxLength(100)]
         public string Email { get; set; }
         [Required]
-        public string SenhaHash { get; set; }
+        [MaxLength(20)]
+        [RegularExpression(@"^\+?\d{10,15}$", ErrorMessage = "Celular deve conter apenas números e pode incluir o código do país")]
+        public string Celular { get; set; }
         [Required]
-        [MaxLength(25)]
-        public string Role { get; set; } = "User";
-        
-        public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
+        [MaxLength(11)]
+        [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF deve conter exatamente 11 dígitos numéricos.")]
+        public string CPF { get; set; }
+        [Required]
+        public string SenhaHash { get; set; }
+        public Guid RoleId { get; set; }
+        public virtual Roles Role { get; set; }
         public List<Filme> FilmesCriados { get; set; } = new List<Filme>();
     }
 }
