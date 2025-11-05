@@ -41,6 +41,8 @@ Uma API RESTful desenvolvida em .NET 8 para gerenciamento de um catálogo de fil
   - C# Dev Kit
   - C# Extension
   - .NET Extension Pack
+- **Git** (recomendado: versão mais recente com Scalar para melhor performance)
+- **Visual Studio 2022** (opcional, mas recomendado para desenvolvimento .NET)
 
 ## ⚙️ Configuração e Instalação
 
@@ -89,6 +91,20 @@ dotnet run
 1. Abra o projeto no VS Code
 2. Pressione `Ctrl+Shift+P` e digite ">.NET: Generate Assets for Build and Debug"
 3. Pressione `F5` para executar com debug, ou `Ctrl+F5` para executar sem debug
+
+### 6. (Opcional) Configurar Git Scalar para melhor performance
+
+Para otimizar a performance do Git, especialmente no Visual Studio:
+
+```bash
+# Execute o script de configuração do Scalar
+.\setup-scalar.ps1
+
+# Ou configure manualmente
+scalar register
+```
+
+📖 **Mais detalhes**: Veja o arquivo [SCALAR.md](SCALAR.md) para informações completas sobre otimização Git.
 
 A API estará disponível em:
 - **HTTP**: `http://localhost:5103`
@@ -177,6 +193,15 @@ O projeto já inclui os arquivos de configuração para VS Code:
 1. **F5** - Executar com Debug (recomendado para desenvolvimento)
 2. **Ctrl+F5** - Executar sem Debug (mais rápido)
 3. **Ctrl+Shift+P** → "Tasks: Run Task" → "run" - Executar via task
+
+### Como Executar no Visual Studio
+
+1. **Abra** o arquivo `CatalogoFilmes.sln`
+2. **Pressione F5** ou clique em "▶️ CatalogoFilmes" para executar
+3. **Git Scalar** será aplicado automaticamente para melhor performance
+4. **Swagger** abrirá automaticamente no navegador
+
+💡 **Dica**: O Visual Studio oferece melhor integração com .NET, IntelliSense avançado e debugging mais robusto.
 
 ## 🔍 Troubleshooting
 

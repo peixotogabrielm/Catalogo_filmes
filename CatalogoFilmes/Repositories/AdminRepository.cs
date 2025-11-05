@@ -24,13 +24,6 @@ namespace CatalogoFilmes.Repositories
             return await _context.Usuarios.CountAsync().ConfigureAwait(false);
         }
 
-        public async Task<int> GetTotalAdmins()
-        {
-            return await _context.Usuarios
-                .CountAsync(u => u.Role == "Admin")
-                .ConfigureAwait(false);
-        }
-
         public async Task<Dictionary<string, int>> GetFilmesPorGenero()
         {
             return await _context.Filmes
@@ -75,20 +68,20 @@ namespace CatalogoFilmes.Repositories
                 .FindAsync(id);
         }
 
-            public async Task<bool> UpdateUsuarioRole(Guid usuarioId, string novaRole)
-            {
-        
+        public async Task<bool> UpdateUsuarioRole(Guid usuarioId, string novaRole)
+        {
+    
 
-                var usuario = await _context.Usuarios.FindAsync(usuarioId).ConfigureAwait(false);
+            var usuario = await _context.Usuarios.FindAsync(usuarioId).ConfigureAwait(false);
 
-                if (usuario == null)
-                    return false;
+            if (usuario == null)
+                return false;
 
-                usuario.Role = novaRole;
-                await _context.SaveChangesAsync().ConfigureAwait(false);
+            usuario.Role = novaRole;
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
-                return true;
-            }
+            return true;
+        }
 
         public async Task<bool> DeleteUsuario(Guid usuarioId)
         {
@@ -129,24 +122,6 @@ namespace CatalogoFilmes.Repositories
                 .MinAsync(f => (int?)f.Ano)
                 .ConfigureAwait(false);
         }
-        public async Task<string?> GetUsuarioMaisAdicionouFilme()
-        {
-            return await _context.Filmes
-           .Where(f => f.CriadoPor != null) 
-           .GroupBy(f => f.CriadoPor.Nome) 
-           .OrderByDescending(g => g.Count()) 
-           .Select(g => g.Key) 
-           .FirstOrDefaultAsync()
-           .ConfigureAwait(false);
-        }
 
-        public async Task<string?> QuemAddFilme()
-        {
-           return await _context.Filmes
-                .OrderByDescending(f => f.DataCriacao)
-                .Select(f => f.CriadoPor.Nome)
-                .FirstOrDefaultAsync()
-                .ConfigureAwait(false);
-        }
     }
 }

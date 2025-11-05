@@ -82,7 +82,6 @@ namespace CatalogoFilmes.Helpers
             {
                 TotalFilmes = 150,
                 TotalUsuarios = 5000,
-                TotalAdmins = 10,
                 FilmesPorGenero = new Dictionary<string, int>
                 {
                     { "Action", 40 },

@@ -24,33 +24,6 @@ namespace CatalogoFilmes.Controllers
 
         }
 
-        [HttpPost("RegistrarAdmin")]
-        [Produces("application/json")]
-        [Consumes("application/json")]
-        [AllowAnonymous]
-        [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status201Created, typeof(ResultCreatedStringExample))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(ResultBadRequestStringExample))]
-        [SwaggerResponse(StatusCodes.Status401Unauthorized, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(ResultUnauthorizedStringExample))]
-        public async Task<IActionResult> RegistroAdmin([FromBody] RegistroDTO dto, [FromQuery] string chaveSecreta)
-        {
-           
-
-            var response = await _authService.RegistroAdmin(dto, chaveSecreta);
-
-            if (response.StatusCode == 400)
-            {
-                return BadRequest(response);
-            }else if(response.StatusCode == 401)
-            {
-                return Unauthorized(response);
-            }
-
-            return Created("", response.Data);
-        }
-
         [HttpGet("Dashboard")]
         [Produces("application/json")]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<DashboardStatusDTO>))]
@@ -133,9 +106,20 @@ namespace CatalogoFilmes.Controllers
         [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(ResultNotFoundStringExample))]
         public async Task<IActionResult> DeleteUsuario(Guid id)
         {
-            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            if (identity == null)
+            {
+                return Unauthorized(Result<string>.Fail(401, "Usuário não autenticado."));
+            }
+            
+            var claimsIdentity = JwtHelper.getUserIdToken(identity);
+            if(claimsIdentity == null)
+            {
+                return Unauthorized(Result<string>.Fail(401, "Usuário não autenticado."));
+            }
+            var usuarioId = Guid.Parse(claimsIdentity);
 
-            var response = await _adminService.DeleteUsuario(id, currentUserId);
+            var response = await _adminService.DeleteUsuario(id, usuarioId);
 
             if (response.StatusCode == 400)
             {

@@ -6,7 +6,6 @@ namespace CatalogoFilmes.Repositories.Interfaces
     {
         Task<int> GetTotalFilmes();
         Task<int> GetTotalUsuarios();
-        Task<int>GetTotalAdmins();
         Task<Dictionary<string, int>> GetFilmesPorGenero();
         Task<Dictionary<int, int>> GetFilmesPorAno();
         Task<(List<Usuario> usuarios, int totalCount)> GetUsuarios(int pageNumber, int pageSize);
@@ -16,7 +15,6 @@ namespace CatalogoFilmes.Repositories.Interfaces
         Task<String?> GetGeneroMaisComum();
         Task<int?> GetAnoMaisRecente();
         Task<int?> GetAnoMaisAntigo();
-        Task<string?> GetUsuarioMaisAdicionouFilme();
-        Task<string?> QuemAddFilme();
+
     }
 }

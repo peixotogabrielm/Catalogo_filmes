@@ -37,8 +37,7 @@ namespace CatalogoFilmes.Services
                 Genero = retornoFilme.Genero,
                 Ano = retornoFilme.Ano,
                 Sinopse = retornoFilme.Sinopse,
-                Nome = retornoFilme.CriadoPor.Nome,
-                DataCriado = retornoFilme.DataCriacao
+                DataAdicionado = retornoFilme.DataCriacao
             });
         }
 
@@ -75,8 +74,7 @@ namespace CatalogoFilmes.Services
                     Genero = f.Genero,
                     Ano = f.Ano,
                     Sinopse = f.Sinopse,
-                    Nome = f.CriadoPor.Nome,
-                    DataCriado = f.DataCriacao
+                    DataAdicionado = f.DataCriacao
 
                 }).ToList();
 
@@ -115,8 +113,7 @@ namespace CatalogoFilmes.Services
                 Genero = filme.Genero,
                 Ano = filme.Ano,
                 Sinopse = filme.Sinopse,
-                Nome = filme.CriadoPor.Nome,
-                DataCriado = filme.DataCriacao
+                DataAdicionado = filme.DataCriacao
             };
             return Result<FilmeDTO>.Ok(200,filmeDTO);
 
@@ -147,8 +144,7 @@ namespace CatalogoFilmes.Services
                 Genero = filmeExistente.Genero,
                 Ano = filmeExistente.Ano,
                 Sinopse = filmeExistente.Sinopse,
-                Nome = filmeExistente.CriadoPor.Nome,
-                DataCriado = filmeExistente.DataCriacao
+                DataAdicionado = filmeExistente.DataCriacao
                 
             });
         }

@@ -48,7 +48,7 @@ namespace CatalogoFilmes.Repositories
             return (filmes, totalCount);
         }
         public async Task<Filme> GetFilmeById(Guid id) {
-            var filme = await _context.Filmes.Include(f => f.CriadoPor).FirstOrDefaultAsync(f => f.Id == id).ConfigureAwait(false);
+            var filme = await _context.Filmes.FirstOrDefaultAsync(f => f.Id == id).ConfigureAwait(false);
             
             return filme;
         }

@@ -13,7 +13,6 @@ namespace CatalogoFilmes.DTOs
         [Range(1900, 2100, ErrorMessage = "Ano deve ser entre 1900 e 2100.")]
         public int Ano { get; set; }
         public string? Sinopse { get; set; }
-        public string? Nome { get; set; }
-        public DateTime DataCriado { get; set; }
+        public DateTime DataAdicionado { get; set; }
     }
 }

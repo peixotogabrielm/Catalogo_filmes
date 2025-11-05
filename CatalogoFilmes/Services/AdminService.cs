@@ -22,20 +22,15 @@ namespace CatalogoFilmes.Services
             {
                 var totalFilmes = await _adminRepository.GetTotalFilmes().ConfigureAwait(false);
                 var totalUsuarios = await _adminRepository.GetTotalUsuarios().ConfigureAwait(false);
-                var totalAdmins = await _adminRepository.GetTotalAdmins().ConfigureAwait(false);
                 var filmesPorGenero = await _adminRepository.GetFilmesPorGenero().ConfigureAwait(false);
                 var filmesPorAno = await _adminRepository.GetFilmesPorAno().ConfigureAwait(false);
-                var usuarioMaisAddFilmes = await _adminRepository.GetUsuarioMaisAdicionouFilme().ConfigureAwait(false);
-
 
                 var stats = new DashboardStatusDTO
                 {
                     TotalFilmes = totalFilmes,
                     TotalUsuarios = totalUsuarios,
-                    TotalAdmins = totalAdmins,
                     FilmesPorGenero = filmesPorGenero,
                     FilmesPorAno = filmesPorAno,
-                    UsuarioMaisAddFilmesNoCatalogo = usuarioMaisAddFilmes
                 };
 
                 return Result<DashboardStatusDTO>.Ok(200, stats);
@@ -111,11 +106,11 @@ namespace CatalogoFilmes.Services
             }
         }
 
-        public async Task<Result<string>> DeleteUsuario(Guid usuarioId, string currentUserId)
+        public async Task<Result<string>> DeleteUsuario(Guid usuarioId, Guid currentUserId)
         {
             try
             {
-                if (currentUserId == usuarioId.ToString())
+                if (currentUserId == usuarioId)
                 {
                     return Result<string>.Fail(401, "Você não pode deletar sua própria conta.");
                 }
@@ -143,7 +138,6 @@ namespace CatalogoFilmes.Services
                 var generoMaisComum = await _adminRepository.GetGeneroMaisComum().ConfigureAwait(false);
                 var anoMaisRecente = await _adminRepository.GetAnoMaisRecente().ConfigureAwait(false);
                 var anoMaisAntigo = await _adminRepository.GetAnoMaisAntigo().ConfigureAwait(false);
-                var quemAdd = await _adminRepository.QuemAddFilme().ConfigureAwait(false);
 
                 var stats = new FilmesStatusDTO
                 {
@@ -151,7 +145,6 @@ namespace CatalogoFilmes.Services
                     GeneroMaisComum = generoMaisComum ?? "N/A",
                     AnoMaisRecente = anoMaisRecente,
                     AnoMaisAntigo = anoMaisAntigo,
-                    QuemAddMaisFilmesNoCatalogo = quemAdd ?? "N/A"
                 };
 
                 return Result<FilmesStatusDTO>.Ok(200, stats);

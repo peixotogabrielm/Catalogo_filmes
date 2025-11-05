@@ -7,10 +7,12 @@ namespace CatalogoFilmes.DTOs
         [Required(ErrorMessage = "Campo nome é obrigatório")]
         [MinLength(2, ErrorMessage = "Nome deve ter no mínimo 2 caracteres")]
         public string Nome { get; set; }
+
         [Required(ErrorMessage = "Campo email é obrigatório")]
         [EmailAddress(ErrorMessage = "Email inválido")]
         [MinLength(5, ErrorMessage = "Email deve ter no mínimo 5 caracteres")]
         public string Email { get; set; }
+        
         [Required(ErrorMessage = "Campo senha é obrigatório")]
         [MinLength(6, ErrorMessage = "Senha deve ter no mínimo 6 caracteres")]
         [DataType(DataType.Password)]

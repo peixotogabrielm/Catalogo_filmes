@@ -29,7 +29,7 @@ namespace CatalogoFilmes.Helpers
             var issuer = _config["Jwt:Issuer"] ?? throw new InvalidOperationException("Configuração Jwt:Issuer não encontrada.");
             var audience = _config["Jwt:Audience"] ?? throw new InvalidOperationException("Configuração Jwt:Audience não encontrada.");
 
-         
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
@@ -42,7 +42,12 @@ namespace CatalogoFilmes.Helpers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
+         
+        public static string getUserIdToken(ClaimsIdentity identity)
+        {
+            var idUsuario = identity.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier).Single().Value;
+            return idUsuario;
+        }
     }
 
 }
