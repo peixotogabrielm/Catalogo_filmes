@@ -58,12 +58,9 @@ namespace CatalogoFilmes.Services
                 }
                 var usuarioDTOs = usuarios.Select(u => new ListaUsuarioDTO
                 {
-                    Id = u.Id,
                     Nome = u.Nome,
                     Email = u.Email,
-                    Role = u.Role.Role,
                     DataCriacao = u.DataCriacao,
-                    FilmesAdicionados = u.FilmesCriados.Count()
                 }).ToList();
 
                 var pagedResult = new ResultadoPaginaDTO<ListaUsuarioDTO>

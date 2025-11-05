@@ -8,21 +8,19 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CatalogoFilmes.Data.Maps
 {
-    public class UsuarioMap : BaseMap<Usuario>
+    public class UsuarioMap : IEntityTypeConfiguration<Usuario>
     {
-        public UsuarioMap() : base("Usuarios") { }
-        public override void Configure(EntityTypeBuilder<Usuario> builder)
+        public UsuarioMap() { }
+        public void Configure(EntityTypeBuilder<Usuario> builder)
         {
-            base.Configure(builder);
+            builder.ToTable("Usuarios");
 
+         
             builder.Property(u => u.Nome)
                 .IsRequired().HasMaxLength(100);
 
             builder.Property(u => u.Email)
                 .IsRequired().HasMaxLength(100);
-
-            builder.Property(u => u.SenhaHash)
-            .IsRequired();
 
             builder.Property(u => u.Celular)
                 .IsRequired().HasMaxLength(20);
@@ -32,13 +30,12 @@ namespace CatalogoFilmes.Data.Maps
 
             builder.HasIndex(u => u.CPF).IsUnique();
 
+            builder.Property(u => u.DataCriacao)
+                .HasDefaultValueSql("GETUTCDATE()");
+
             builder.HasIndex(u => u.Email)
             .IsUnique();
 
-            builder.HasOne(u => u.Role)
-                .WithMany(r => r.Usuarios)
-                .HasForeignKey(u => u.RoleId)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 } 

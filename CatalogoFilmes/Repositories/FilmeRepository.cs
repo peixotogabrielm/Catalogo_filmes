@@ -18,7 +18,7 @@ namespace CatalogoFilmes.Repositories
 
         public async Task<(List<Filme> filmes, int totalCount)> GetAllFilmes(FilmeFiltroDTO filter)
         {
-            var query = _context.Filmes.Include(f => f.CriadoPor).AsQueryable();
+            var query = _context.Filmes.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filter.Titulo))
             {
@@ -60,7 +60,6 @@ namespace CatalogoFilmes.Repositories
             {
                 _context.Filmes.Add(filme); 
                 await _context.SaveChangesAsync().ConfigureAwait(false);
-                await _context.Entry(filme).Reference(f => f.CriadoPor).LoadAsync().ConfigureAwait(false);
                 return filme;
 
             }

@@ -7,6 +7,7 @@ using CatalogoFilmes.DTOs;
 using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Models;
 using CatalogoFilmes.Repositories.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogoFilmes.Services.Interfaces
@@ -14,9 +15,12 @@ namespace CatalogoFilmes.Services.Interfaces
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _usuarioRepository;
-        public UsuarioService(IUsuarioRepository usuarioRepository)
+            private readonly UserManager<Usuario> _userManager;
+        public UsuarioService(IUsuarioRepository usuarioRepository, UserManager<Usuario> userManager)
         {
             _usuarioRepository = usuarioRepository;
+            _userManager = userManager;
+            
         }
         public async Task<Result<string>> RegistrarAsync(RegistroDTO request)
         {
@@ -43,11 +47,12 @@ namespace CatalogoFilmes.Services.Interfaces
                 Email = request.Email,
                 CPF = request.CPF,
                 Celular = request.Celular,
-                SenhaHash = BCrypt.Net.BCrypt.HashPassword(request.Senha),
-                RoleId = new Roles { Role = "User" }.Id
             };
-            await _usuarioRepository.AddUsuarioAsync(user);
-            await _usuarioRepository.SalvarUsuarioAsync();
+            var result = await _userManager.CreateAsync(user, request.Senha);
+            if (!result.Succeeded)
+            {
+                return Result<string>.Fail(400, "Falha ao criar usuário: " + string.Join(", ", result.Errors.Select(e => e.Description)));
+            }
             return Result<string>.Ok(200, "Conta criada com sucesso!");
         }
     }

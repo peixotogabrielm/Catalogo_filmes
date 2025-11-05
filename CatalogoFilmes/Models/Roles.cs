@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace CatalogoFilmes.Models
 {
-    public class Roles : Base
+    public static class Roles
     {
-        public string Role { get; set; } = "User";
-        public ICollection<Usuario> Usuarios { get; set; }
+        public const string Admin = "Admin";
+        public const string User = "User";
     }
 }

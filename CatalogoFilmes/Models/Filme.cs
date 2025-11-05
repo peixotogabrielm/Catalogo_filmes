@@ -20,9 +20,7 @@ namespace CatalogoFilmes.Models
         public string? Sinopse { get; set; }
         [Required]
         public TimeSpan Duracao { get; set; }
-        public Guid? CriadoPorId { get; set; }
-        [ForeignKey("CriadoPorId")]
-        public Usuario CriadoPor { get; set; }
+
 
     }
 }

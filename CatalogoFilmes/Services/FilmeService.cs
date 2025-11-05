@@ -18,12 +18,12 @@ namespace CatalogoFilmes.Services
         {
             var novoFilme = new Filme
             {
-                
+
                 Titulo = filme.Titulo,
                 Genero = filme.Genero,
                 Ano = filme.Ano,
                 Sinopse = filme.Sinopse,
-                CriadoPorId = usuarioId,
+                Duracao = filme.Duracao
             };
             var retornoFilme = await _filmeRepository.AddFilme(novoFilme).ConfigureAwait(false);
             if(retornoFilme == null)
@@ -37,6 +37,7 @@ namespace CatalogoFilmes.Services
                 Genero = retornoFilme.Genero,
                 Ano = retornoFilme.Ano,
                 Sinopse = retornoFilme.Sinopse,
+                Duracao = retornoFilme.Duracao,
                 DataAdicionado = retornoFilme.DataCriacao
             });
         }
@@ -74,6 +75,7 @@ namespace CatalogoFilmes.Services
                     Genero = f.Genero,
                     Ano = f.Ano,
                     Sinopse = f.Sinopse,
+                    Duracao = f.Duracao,
                     DataAdicionado = f.DataCriacao
 
                 }).ToList();
@@ -113,6 +115,7 @@ namespace CatalogoFilmes.Services
                 Genero = filme.Genero,
                 Ano = filme.Ano,
                 Sinopse = filme.Sinopse,
+                Duracao = filme.Duracao,
                 DataAdicionado = filme.DataCriacao
             };
             return Result<FilmeDTO>.Ok(200,filmeDTO);
@@ -132,6 +135,7 @@ namespace CatalogoFilmes.Services
             filmeExistente.Genero = filme.Genero;
             filmeExistente.Ano = filme.Ano;
             filmeExistente.Sinopse = filme.Sinopse;
+            filmeExistente.Duracao = filme.Duracao;
             await _filmeRepository.UpdateFilme(filmeExistente).ConfigureAwait(false);
             if(filmeExistente == null)
             {
@@ -144,8 +148,9 @@ namespace CatalogoFilmes.Services
                 Genero = filmeExistente.Genero,
                 Ano = filmeExistente.Ano,
                 Sinopse = filmeExistente.Sinopse,
+                Duracao = filmeExistente.Duracao,
                 DataAdicionado = filmeExistente.DataCriacao
-                
+
             });
         }
     }

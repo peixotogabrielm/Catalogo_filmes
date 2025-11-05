@@ -47,7 +47,6 @@ namespace CatalogoFilmes.Repositories
         public async Task<(List<Usuario> usuarios, int totalCount)> GetUsuarios(int pageNumber, int pageSize)
         {
             var query = _context.Usuarios
-            .Include(u => u.FilmesCriados) // traz os filmes do usuário
             .AsQueryable();
 
             var totalCount = await query.CountAsync().ConfigureAwait(false);
@@ -77,7 +76,6 @@ namespace CatalogoFilmes.Repositories
             if (usuario == null)
                 return false;
 
-            usuario.Role.Role = novaRole;
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return true;

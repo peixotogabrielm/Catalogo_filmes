@@ -34,10 +34,7 @@ namespace CatalogoFilmes.Maps
             builder.HasIndex(f => f.Titulo)
                 .IsUnique();
 
-            builder.HasOne(f => f.CriadoPor)           
-                .WithMany(u => u.FilmesCriados)       
-                .HasForeignKey(f => f.CriadoPorId)    
-                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

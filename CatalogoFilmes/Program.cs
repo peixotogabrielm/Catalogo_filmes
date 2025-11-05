@@ -3,6 +3,7 @@ using CatalogoFilmes.Data;
 using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -83,7 +84,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ElevatedRights", policy =>
+    policy.RequireRole(Roles.Admin));
+    options.AddPolicy("StandardRights", policy =>
+    policy.RequireRole(Roles.Admin, Roles.User));
+});
 
 var MyAllowSpecificOrigins = "CORSPolicy";
 
@@ -96,7 +103,12 @@ builder.Services.AddCors(options =>
         .AllowCredentials()
         .SetIsOriginAllowed((hosts) => true));
 });
-
+builder.Services.AddIdentity<Usuario, IdentityRole>()
+                .AddRoles<IdentityRole>()
+                .AddRoleManager<RoleManager<IdentityRole>>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+    
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
