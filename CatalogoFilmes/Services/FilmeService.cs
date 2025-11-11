@@ -75,12 +75,15 @@ namespace CatalogoFilmes.Services
                     Ano = f.Ano,
                     Sinopse = f.Sinopse,
                     Duracao = f.Duracao,
+                    Idioma = f.Idioma,
+                    PosterUrl = f.Poster
+                    
 
                 }).ToList();
 
                 var pagedResult = new ResultadoPaginaDTO<FilmeDTO>
                 {
-                    Items = filmeDTOs,
+                    Data = filmeDTOs,
                     TotalItems = totalCount,
                     PageNumber = filter.PageNumber,
                     PageSize = filter.PageSize

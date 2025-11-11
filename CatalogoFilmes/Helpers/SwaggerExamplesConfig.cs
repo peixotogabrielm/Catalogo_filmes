@@ -30,7 +30,7 @@ namespace CatalogoFilmes.Helpers
              StatusCode = 200,
              Data = new ResultadoPaginaDTO<FilmeDTO>
              {
-                 Items = new List<FilmeDTO>
+                 Data = new List<FilmeDTO>
                 {
                     new FilmeDTO
                     {
@@ -107,7 +107,7 @@ namespace CatalogoFilmes.Helpers
                 StatusCode = 200,
                 Data = new ResultadoPaginaDTO<ListaUsuarioDTO>
                 {
-                    Items = new List<ListaUsuarioDTO>
+                    Data = new List<ListaUsuarioDTO>
                 {
                     new ListaUsuarioDTO
                     {
@@ -199,7 +199,7 @@ namespace CatalogoFilmes.Helpers
                 Sucesso = true,
                 Data = new ResultadoPaginaDTO<ListaUsuarioDTO>()
                 {
-                    Items = new List<ListaUsuarioDTO>(),
+                    Data = new List<ListaUsuarioDTO>(),
                     PageNumber = 1,
                     PageSize = 10,
                     TotalItems = 0
@@ -215,7 +215,7 @@ namespace CatalogoFilmes.Helpers
                 Sucesso = true,
                 Data = new ResultadoPaginaDTO<FilmeDTO>
                 {
-                    Items = new List<FilmeDTO>(),
+                    Data = new List<FilmeDTO>(),
                     PageNumber = 1,
                     PageSize = 10,
                     TotalItems = 0

@@ -50,7 +50,7 @@ namespace CatalogoFilmes.Services
                 {
                     return Result<ResultadoPaginaDTO<ListaUsuarioDTO>>.Ok(204, new ResultadoPaginaDTO<ListaUsuarioDTO>
                     {
-                        Items = new List<ListaUsuarioDTO>(),
+                        Data = new List<ListaUsuarioDTO>(),
                         TotalItems = 0,
                         PageNumber = pageNumber,
                         PageSize = pageSize
@@ -65,7 +65,7 @@ namespace CatalogoFilmes.Services
 
                 var pagedResult = new ResultadoPaginaDTO<ListaUsuarioDTO>
                 {
-                    Items = usuarioDTOs,
+                    Data = usuarioDTOs,
                     TotalItems = totalCount,
                     PageNumber = pageNumber,
                     PageSize = pageSize
