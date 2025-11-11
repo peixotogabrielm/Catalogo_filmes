@@ -13,6 +13,7 @@ namespace CatalogoFilmes.Data
         public DbSet<Filme> Filmes { get; set; }
         public DbSet<EquipeTecnica> EquipeTecnicas { get; set; }
         public DbSet<Classificacoes> Classificacoes { get; set; }
+        public DbSet<Catalogo> Catalogos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -45,7 +45,7 @@ namespace CatalogoFilmes.Maps
                 .WithOne(c => c.Filme)
                 .HasForeignKey(c => c.FilmeId);
 
-            builder.HasMany(f => f.Equipe)
+            builder.HasMany(f => f.Equipes)
                 .WithOne(e => e.Filme)
                 .HasForeignKey(e => e.FilmeId);
         }

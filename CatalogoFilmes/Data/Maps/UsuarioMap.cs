@@ -37,6 +37,10 @@ namespace CatalogoFilmes.Data.Maps
             builder.HasIndex(u => u.Email)
             .IsUnique();
 
+            builder.HasMany(u => u.Catalogos)
+                .WithOne(c => c.Usuario)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 } 

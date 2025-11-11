@@ -25,7 +25,7 @@ namespace CatalogoFilmes.Data.Maps
                 .IsRequired().HasMaxLength(200);
 
             builder.HasOne(e => e.Filme)
-                .WithMany(f => f.Equipe)
+                .WithMany(f => f.Equipes)
                 .HasForeignKey(e => e.FilmeId);
 
         }

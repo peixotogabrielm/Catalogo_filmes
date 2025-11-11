@@ -22,7 +22,59 @@ namespace CatalogoFilmes.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CatalogoFilmes.Models.Classificacao", b =>
+            modelBuilder.Entity("CatalogoFilme", b =>
+                {
+                    b.Property<Guid>("CatalogosId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FilmesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("CatalogosId", "FilmesId");
+
+                    b.HasIndex("FilmesId");
+
+                    b.ToTable("CatalogoFilmes", (string)null);
+                });
+
+            modelBuilder.Entity("CatalogoFilmes.Models.Catalogo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<int>("Categoria")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("Catalogos", (string)null);
+                });
+
+            modelBuilder.Entity("CatalogoFilmes.Models.Classificacoes", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -378,7 +430,33 @@ namespace CatalogoFilmes.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("CatalogoFilmes.Models.Classificacao", b =>
+            modelBuilder.Entity("CatalogoFilme", b =>
+                {
+                    b.HasOne("CatalogoFilmes.Models.Catalogo", null)
+                        .WithMany()
+                        .HasForeignKey("CatalogosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CatalogoFilmes.Models.Filme", null)
+                        .WithMany()
+                        .HasForeignKey("FilmesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CatalogoFilmes.Models.Catalogo", b =>
+                {
+                    b.HasOne("CatalogoFilmes.Models.Usuario", "Usuario")
+                        .WithMany("Catalogos")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("CatalogoFilmes.Models.Classificacoes", b =>
                 {
                     b.HasOne("CatalogoFilmes.Models.Filme", "Filme")
                         .WithMany("Classificacoes")
@@ -392,7 +470,7 @@ namespace CatalogoFilmes.Migrations
             modelBuilder.Entity("CatalogoFilmes.Models.EquipeTecnica", b =>
                 {
                     b.HasOne("CatalogoFilmes.Models.Filme", "Filme")
-                        .WithMany("Equipe")
+                        .WithMany("Equipes")
                         .HasForeignKey("FilmeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -455,7 +533,12 @@ namespace CatalogoFilmes.Migrations
                 {
                     b.Navigation("Classificacoes");
 
-                    b.Navigation("Equipe");
+                    b.Navigation("Equipes");
+                });
+
+            modelBuilder.Entity("CatalogoFilmes.Models.Usuario", b =>
+                {
+                    b.Navigation("Catalogos");
                 });
 #pragma warning restore 612, 618
         }

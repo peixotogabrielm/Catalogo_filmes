@@ -16,7 +16,9 @@ namespace CatalogoFilmes.Models
         public string Celular { get; set; }
    
         public string CPF { get; set; }
-        
+
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
+        
+        public ICollection<Catalogo> Catalogos { get; set; }
     }
 }

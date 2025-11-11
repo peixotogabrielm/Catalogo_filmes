@@ -25,8 +25,10 @@ namespace CatalogoFilmes.Models
         public string Poster { get; set; }
 
         public ICollection<Classificacoes> Classificacoes { get; set; } = new List<Classificacoes>();
+
+        public ICollection<EquipeTecnica> Equipes { get; set; } = new List<EquipeTecnica>();
         
-        public ICollection<EquipeTecnica> Equipe { get; set; } = new List<EquipeTecnica>();
+        public ICollection<Catalogo> Catalogos { get; set; }
 
     }
     
