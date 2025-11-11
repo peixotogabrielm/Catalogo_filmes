@@ -3,6 +3,7 @@ using CatalogoFilmes.DTOs;
 using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Models;
 using CatalogoFilmes.Repositories.Interfaces;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace CatalogoFilmes.Repositories
@@ -18,34 +19,39 @@ namespace CatalogoFilmes.Repositories
 
         public async Task<(List<Filme> filmes, int totalCount)> GetAllFilmes(FilmeFiltroDTO filter)
         {
-            var query = _context.Filmes.AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(filter.Titulo))
+            try
             {
-                query = query.Where(f => f.Titulo.ToLower().Contains(filter.Titulo.ToLower()));
-            }
+                
+                var query = _context.Filmes.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(filter.Genero))
-            {
-                query = query.Where(f => f.Genero.ToLower().Contains(filter.Genero.ToLower()));
-            }
+                if (!string.IsNullOrWhiteSpace(filter.Titulo))
+                {
+                    query = query.Where(f => f.Titulo.ToLower().Contains(filter.Titulo.ToLower()));
+                }
+
+                if (filter.Genero != null && filter.Genero.Count > 0)
+                {
+                    query = query.Where(f => f.Genero.Contains(f.Genero));
+                }
             
-            if (filter.Ano.HasValue)
+                if (!string.IsNullOrWhiteSpace(filter.Ano))
+                {
+                    query = query.Where(f => f.Ano == filter.Ano);
+                }
+
+                var totalCount = await query.CountAsync().ConfigureAwait(false);
+
+                var filmes = await query
+                    .Skip((filter.PageNumber - 1) * filter.PageSize)
+                    .Take(filter.PageSize)
+                    .ToListAsync()
+                    .ConfigureAwait(false);
+
+                return (filmes, totalCount);
+            }catch(SqlException ex)
             {
-                query = query.Where(f => f.Ano == filter.Ano.Value);
+                throw new Exception("Erro ao buscar filmes: " + ex.Message);
             }
-
-            var totalCount = await query.CountAsync().ConfigureAwait(false);
-
-            var filmes = await query
-                .OrderByDescending(f => f.Ano)
-                .ThenBy(f => f.Titulo)
-                .Skip((filter.PageNumber - 1) * filter.PageSize)
-                .Take(filter.PageSize)
-                .ToListAsync()
-                .ConfigureAwait(false);
-           
-            return (filmes, totalCount);
         }
         public async Task<Filme> GetFilmeById(Guid id) {
             var filme = await _context.Filmes.FirstOrDefaultAsync(f => f.Id == id).ConfigureAwait(false);

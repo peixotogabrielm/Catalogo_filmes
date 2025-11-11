@@ -8,7 +8,6 @@ namespace CatalogoFilmes.Models
 {
     public class Base
     {
-        [Key]
         public Guid Id { get; set; }
         
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;

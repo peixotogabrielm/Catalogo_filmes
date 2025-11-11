@@ -5,22 +5,30 @@ namespace CatalogoFilmes.Models
 {
     public class Filme : Base
     {
-        
-        [Required]
-        [MaxLength(200)]
-        public string Titulo { get; set; }
-        [Required]
-        [MaxLength(50)]
-        public string Genero { get; set; }
-        [Required]
-        [Range(1800, 2100)]
-        public int Ano { get; set; }
-        [MaxLength(2000)]
-        [Required]
-        public string? Sinopse { get; set; }
-        [Required]
-        public TimeSpan Duracao { get; set; }
 
+        public string Titulo { get; set; }
+
+        public string Ano { get; set; }
+
+        public string Genero { get; set; }
+
+        public string Sinopse { get; set; }
+
+        public string Tipo { get; set; }
+
+        public int Duracao { get; set; }
+
+        public string ImdbId { get; set; }
+
+        public string Idioma { get; set; }
+
+        public string Poster { get; set; }
+
+        public ICollection<Classificacoes> Classificacoes { get; set; } = new List<Classificacoes>();
+        
+        public ICollection<EquipeTecnica> Equipe { get; set; } = new List<EquipeTecnica>();
 
     }
+    
+
 }

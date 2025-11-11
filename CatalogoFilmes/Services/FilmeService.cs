@@ -20,7 +20,7 @@ namespace CatalogoFilmes.Services
             {
 
                 Titulo = filme.Titulo,
-                Genero = filme.Genero,
+                Genero = filme.Generos,
                 Ano = filme.Ano,
                 Sinopse = filme.Sinopse,
                 Duracao = filme.Duracao
@@ -34,11 +34,10 @@ namespace CatalogoFilmes.Services
             {
                 Id = retornoFilme.Id,
                 Titulo = retornoFilme.Titulo,
-                Genero = retornoFilme.Genero,
+                Generos = retornoFilme.Genero,
                 Ano = retornoFilme.Ano,
                 Sinopse = retornoFilme.Sinopse,
                 Duracao = retornoFilme.Duracao,
-                DataAdicionado = retornoFilme.DataCriacao
             });
         }
 
@@ -72,11 +71,10 @@ namespace CatalogoFilmes.Services
                 {
                     Id = f.Id,
                     Titulo = f.Titulo,
-                    Genero = f.Genero,
+                    Generos = f.Genero,
                     Ano = f.Ano,
                     Sinopse = f.Sinopse,
                     Duracao = f.Duracao,
-                    DataAdicionado = f.DataCriacao
 
                 }).ToList();
 
@@ -112,11 +110,10 @@ namespace CatalogoFilmes.Services
             {
                 Id = filme.Id,
                 Titulo = filme.Titulo,
-                Genero = filme.Genero,
+                Generos = filme.Genero,
                 Ano = filme.Ano,
                 Sinopse = filme.Sinopse,
                 Duracao = filme.Duracao,
-                DataAdicionado = filme.DataCriacao
             };
             return Result<FilmeDTO>.Ok(200,filmeDTO);
 
@@ -132,7 +129,7 @@ namespace CatalogoFilmes.Services
             }
            
             filmeExistente.Titulo = filme.Titulo;
-            filmeExistente.Genero = filme.Genero;
+            filmeExistente.Genero = filme.Generos;
             filmeExistente.Ano = filme.Ano;
             filmeExistente.Sinopse = filme.Sinopse;
             filmeExistente.Duracao = filme.Duracao;
@@ -145,11 +142,10 @@ namespace CatalogoFilmes.Services
             {
                 Id = filmeExistente.Id,
                 Titulo = filmeExistente.Titulo,
-                Genero = filmeExistente.Genero,
+                Generos = filmeExistente.Genero,
                 Ano = filmeExistente.Ano,
                 Sinopse = filmeExistente.Sinopse,
                 Duracao = filmeExistente.Duracao,
-                DataAdicionado = filmeExistente.DataCriacao
 
             });
         }

@@ -83,6 +83,7 @@ namespace CatalogoFilmes.Services
         {
             try
             {
+                //teste
                 if (dto.NovaRole != "Admin" && dto.NovaRole != "User")
                 {
                     return Result<string>.Fail(401, "Role inválida. Use 'Admin' ou 'User'.");

@@ -15,8 +15,8 @@ namespace CatalogoFilmes.Helpers
              {
                  Id = Guid.NewGuid(),
                  Titulo = "Inception",
-                 Genero = "Sci-Fi",
-                 Ano = 2010,
+                 Generos = "Sci-Fi" ,
+                 Ano = "2010",
                  Sinopse = "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."
              }
          };
@@ -36,16 +36,16 @@ namespace CatalogoFilmes.Helpers
                     {
                     Id = Guid.NewGuid(),
                     Titulo = "Inception",
-                    Genero = "Sci-Fi",
-                    Ano = 2010,
+                    Generos = "Sci-Fi",
+                    Ano = "2010",
                     Sinopse = "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."
                     },
                     new FilmeDTO
                     {
                     Id = Guid.NewGuid(),
                     Titulo = "The Dark Knight",
-                    Genero = "Action",
-                    Ano = 2008,
+                    Generos = "Action" ,
+                    Ano = "2008",
                     Sinopse = "When the menace known as the Joker wreaks havoc and chaos on the people of Gotham, Batman must accept one of the greatest psychological and physical tests of his ability to fight injustice."
                     }
                 },
@@ -89,12 +89,12 @@ namespace CatalogoFilmes.Helpers
                     { "Drama", 50 },
                     { "Sci-Fi", 30 }
                 },
-                FilmesPorAno = new Dictionary<int, int>
+                FilmesPorAno = new Dictionary<string, int>
                 {
-                    { 2020, 20 },
-                    { 2019, 25 },
-                    { 2018, 30 },
-                    { 2017, 35 }
+                    { "2020", 20 },
+                    { "2019", 25 },
+                    { "2018", 30 },
+                    { "2017", 35 }
                 }
             };
     }
@@ -144,8 +144,8 @@ namespace CatalogoFilmes.Helpers
              {
                  TotalFilmes = 150,
                  GeneroMaisComum = "Drama",
-                 AnoMaisRecente = 2023,
-                 AnoMaisAntigo = 1980
+                 AnoMaisRecente = "2023",
+                 AnoMaisAntigo = "1980"
              }
          };
     }
@@ -172,8 +172,8 @@ namespace CatalogoFilmes.Helpers
              {
                  Id = Guid.NewGuid(),
                  Titulo = "Inception",
-                 Genero = "Sci-Fi",
-                 Ano = 2010,
+                 Generos = "Sci-Fi",
+                 Ano = "2010",
                  Sinopse = "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O."
              }
          };

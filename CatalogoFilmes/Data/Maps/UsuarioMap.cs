@@ -33,6 +33,7 @@ namespace CatalogoFilmes.Data.Maps
             builder.Property(u => u.DataCriacao)
                 .HasDefaultValueSql("GETUTCDATE()");
 
+
             builder.HasIndex(u => u.Email)
             .IsUnique();
 

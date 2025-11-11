@@ -7,14 +7,14 @@ namespace CatalogoFilmes.Repositories.Interfaces
         Task<int> GetTotalFilmes();
         Task<int> GetTotalUsuarios();
         Task<Dictionary<string, int>> GetFilmesPorGenero();
-        Task<Dictionary<int, int>> GetFilmesPorAno();
+        Task<Dictionary<string, int>> GetFilmesPorAno();
         Task<(List<Usuario> usuarios, int totalCount)> GetUsuarios(int pageNumber, int pageSize);
         Task<Usuario?> GetUsuarioById(Guid id);
         Task<bool> UpdateUsuarioRole(Guid usuarioId, string novaRole);
         Task<bool> DeleteUsuario(Guid usuarioId);
-        Task<String?> GetGeneroMaisComum();
-        Task<int?> GetAnoMaisRecente();
-        Task<int?> GetAnoMaisAntigo();
+        Task<string?> GetGeneroMaisComum();
+        Task<string?> GetAnoMaisRecente();
+        Task<string?> GetAnoMaisAntigo();
 
     }
 }

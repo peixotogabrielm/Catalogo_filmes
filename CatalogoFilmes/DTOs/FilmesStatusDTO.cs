@@ -4,7 +4,7 @@
     {
         public int TotalFilmes { get; set; }
         public string GeneroMaisComum { get; set; }
-        public int? AnoMaisRecente { get; set; }
-        public int? AnoMaisAntigo { get; set; }
+        public string? AnoMaisRecente { get; set; }
+        public string? AnoMaisAntigo { get; set; }
     }
 }

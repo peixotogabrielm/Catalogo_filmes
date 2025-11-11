@@ -28,15 +28,14 @@ namespace CatalogoFilmes.Data
             }
         }
 
-    private static async Task SeedAdminUser(IServiceProvider services)
+        private static async Task SeedAdminUser(IServiceProvider services)
         {
             var userManager = services.GetRequiredService<UserManager<Usuario>>();
-            string adminEmail = "admin@catalogofilmes.com";
+            string adminEmail = "ADMIN@CATALOGOFILMES.COM";
             string adminPassword = "Admin@123!";
 
-            var existingUser = await userManager.FindByEmailAsync(adminEmail).ConfigureAwait(false);
             var existingUserByUserName = await userManager.FindByNameAsync(adminEmail).ConfigureAwait(false);
-            if (existingUser == null && existingUserByUserName == null)
+            if (existingUserByUserName == null)
             {
                 var adminUser = new Usuario
                 {

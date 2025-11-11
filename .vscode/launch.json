@@ -1,26 +1,18 @@
 {
-  "configurations": [
+  "name": ".NET Core Launch (web)",
+  "type": "coreclr",
+  "request": "launch",
+  "program": "${workspaceFolder}/CatalogoFilmes/bin/Debug/net8.0/CatalogoFilmes.dll",
+  "cwd": "${workspaceFolder}",
+"stopAtEntry": false,
+"configurations": [
     {
-      "type": "coreclr",
-      "request": "launch",
-      "name": "Launch CatalogoFilmes",
-      "program": "${workspaceFolder}/CatalogoFilmes/bin/Debug/net8.0/CatalogoFilmes.dll",
-      "args": [],
-      "cwd": "${workspaceFolder}/CatalogoFilmes",
-      "stopAtEntry": false,
-      "console": "internalConsole",
-      "serverReadyAction": {
-        "action": "openExternally",
-        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
-        "uriFormat": "%s/scalar/v1"
-      },
-      "env": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "sourceFileMap": {
-        "/Views": "${workspaceFolder}/Views"
-      },
-      "preLaunchTask": "build"
-    }
-  ]
+        "name": "C#: CatalogoFilmes Debug",
+        "type": "dotnet",
+        "request": "launch",
+        "projectPath": "${workspaceFolder}/CatalogoFilmes/CatalogoFilmes.csproj"
+    },
+
+
+]
 }

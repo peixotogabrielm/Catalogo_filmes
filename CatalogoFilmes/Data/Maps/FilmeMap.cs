@@ -17,24 +17,37 @@ namespace CatalogoFilmes.Maps
             base.Configure(builder);
             
             builder.Property(f => f.Titulo)
-                .IsRequired().HasMaxLength(200);
+                .IsRequired().HasMaxLength(255);
 
             builder.Property(f => f.Genero)
-                .IsRequired().HasMaxLength(100);
+                .IsRequired().HasMaxLength(200);
 
             builder.Property(f => f.Duracao)
-                .IsRequired().HasColumnType("time");
-            
-            builder.Property(f => f.Sinopse)
-                .IsRequired().HasMaxLength(2000);
-
-            builder.Property(f => f.Ano)
                 .IsRequired().HasColumnType("int");
 
-            builder.HasIndex(f => f.Titulo)
-                .IsUnique();
+            builder.Property(f => f.Sinopse).HasMaxLength(2000);
 
+            builder.Property(f => f.Ano)
+                .IsRequired().HasMaxLength(20);
+    
+            builder.Property(f => f.Tipo)
+            .IsRequired().HasMaxLength(20);
 
+            builder.Property(f => f.ImdbId)
+            .IsRequired().HasMaxLength(50);
+
+            builder.Property(f => f.Idioma)
+            .IsRequired().HasMaxLength(100);
+
+            builder.Property(f => f.Poster).HasMaxLength(500);
+            
+            builder.HasMany(f => f.Classificacoes)
+                .WithOne(c => c.Filme)
+                .HasForeignKey(c => c.FilmeId);
+
+            builder.HasMany(f => f.Equipe)
+                .WithOne(e => e.Filme)
+                .HasForeignKey(e => e.FilmeId);
         }
     }
 }

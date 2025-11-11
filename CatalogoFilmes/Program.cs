@@ -129,6 +129,10 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     await SeedManager.Seed(services);
 }
+
+// Configure CORS
+app.UseCors(MyAllowSpecificOrigins);
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

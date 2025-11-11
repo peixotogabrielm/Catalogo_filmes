@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -27,6 +28,7 @@ namespace CatalogoFilmes.Controllers
 
         [HttpGet("GetAllFilmes")]
         [Produces("application/json")]
+        [AllowAnonymous]
         [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<ResultadoPaginaDTO<FilmeDTO>>))]
         [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessPaginaFilmeDTOExample))]
         [SwaggerResponse(StatusCodes.Status204NoContent, Type = typeof(Result<ResultadoPaginaDTO<FilmeDTO>>))]
@@ -100,7 +102,7 @@ namespace CatalogoFilmes.Controllers
         [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(ResultBadRequestFilmeDTOExample))]
         [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(Result<FilmeDTO>))]
         [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(ResultNotFoundFilmeDTOExample))]
-        public async Task<IActionResult> UpdateFilme([FromBody]FilmeUpdateDTO filme, [FromQuery] Guid idFilme)
+        public async Task<IActionResult> UpdateFilme([FromBody]FilmeUpdateDTO filme, [FromQuery, Required] Guid idFilme)
         {
             var response = await _filmeService.UpdateFilme(filme, idFilme);
             if (response.StatusCode == 404)

@@ -22,6 +22,72 @@ namespace CatalogoFilmes.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CatalogoFilmes.Models.Classificacao", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("FilmeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Fonte")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Nota")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmeId");
+
+                    b.ToTable("Classificacoes", (string)null);
+                });
+
+            modelBuilder.Entity("CatalogoFilmes.Models.EquipeTecnica", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("Id")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.Property<string>("Cargo")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime>("DataCriacao")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<Guid>("FilmeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FilmeId");
+
+                    b.ToTable("Equipes", (string)null);
+                });
+
             modelBuilder.Entity("CatalogoFilmes.Models.Filme", b =>
                 {
                     b.Property<Guid>("Id")
@@ -30,41 +96,55 @@ namespace CatalogoFilmes.Migrations
                         .HasColumnName("Id")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<int>("Ano")
-                        .HasColumnType("int");
+                    b.Property<string>("Ano")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("DataCriacao")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<TimeSpan>("Duracao")
-                        .HasColumnType("time");
+                    b.Property<int>("Duracao")
+                        .HasColumnType("int");
 
                     b.Property<string>("Genero")
                         .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Idioma")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ImdbId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Poster")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Sinopse")
                         .IsRequired()
                         .HasMaxLength(2000)
                         .HasColumnType("nvarchar(2000)");
 
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("Titulo")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<string>("UsuarioId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Titulo")
-                        .IsUnique();
-
-                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Filmes", (string)null);
                 });
@@ -298,11 +378,26 @@ namespace CatalogoFilmes.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("CatalogoFilmes.Models.Filme", b =>
+            modelBuilder.Entity("CatalogoFilmes.Models.Classificacao", b =>
                 {
-                    b.HasOne("CatalogoFilmes.Models.Usuario", null)
-                        .WithMany("FilmesCriados")
-                        .HasForeignKey("UsuarioId");
+                    b.HasOne("CatalogoFilmes.Models.Filme", "Filme")
+                        .WithMany("Classificacoes")
+                        .HasForeignKey("FilmeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Filme");
+                });
+
+            modelBuilder.Entity("CatalogoFilmes.Models.EquipeTecnica", b =>
+                {
+                    b.HasOne("CatalogoFilmes.Models.Filme", "Filme")
+                        .WithMany("Equipe")
+                        .HasForeignKey("FilmeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Filme");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -356,9 +451,11 @@ namespace CatalogoFilmes.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CatalogoFilmes.Models.Usuario", b =>
+            modelBuilder.Entity("CatalogoFilmes.Models.Filme", b =>
                 {
-                    b.Navigation("FilmesCriados");
+                    b.Navigation("Classificacoes");
+
+                    b.Navigation("Equipe");
                 });
 #pragma warning restore 612, 618
         }

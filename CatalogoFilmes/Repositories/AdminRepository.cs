@@ -27,13 +27,14 @@ namespace CatalogoFilmes.Repositories
         public async Task<Dictionary<string, int>> GetFilmesPorGenero()
         {
             return await _context.Filmes
-                .GroupBy(f => f.Genero)
+                .Select(f => f.Genero)
+                .GroupBy(g => g)
                 .Select(g => new { Genero = g.Key, Count = g.Count() })
                 .ToDictionaryAsync(x => x.Genero, x => x.Count)
                 .ConfigureAwait(false);
         }
 
-        public async Task<Dictionary<int, int>> GetFilmesPorAno()
+        public async Task<Dictionary<string, int>> GetFilmesPorAno()
         {
             return await _context.Filmes
                 .GroupBy(f => f.Ano)
@@ -100,24 +101,25 @@ namespace CatalogoFilmes.Repositories
         public async Task<string?> GetGeneroMaisComum()
         {
             return await _context.Filmes
-                .GroupBy(f => f.Genero)
+                .Select(f => f.Genero)
+                .GroupBy(g => g)
                 .OrderByDescending(g => g.Count())
                 .Select(g => g.Key)
                 .FirstOrDefaultAsync()
                 .ConfigureAwait(false);
         }
 
-        public async Task<int?> GetAnoMaisRecente()
+        public async Task<string?> GetAnoMaisRecente()
         {
             return await _context.Filmes
-                .MaxAsync(f => (int?)f.Ano)
+                .MaxAsync(f => f.Ano)
                 .ConfigureAwait(false);
         }
 
-        public async Task<int?> GetAnoMaisAntigo()
+        public async Task<string?> GetAnoMaisAntigo()
         {
             return await _context.Filmes
-                .MinAsync(f => (int?)f.Ano)
+                .MinAsync(f => f.Ano)
                 .ConfigureAwait(false);
         }
 
