@@ -4,14 +4,15 @@ using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Models;
 using CatalogoFilmes.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.Filters;
 
 namespace CatalogoFilmes.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
@@ -21,21 +22,15 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpPost("Login")]
-        [Produces("application/json")]
-        [Consumes("application/json")]
         [AllowAnonymous]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessStringExample))]
-        [SwaggerResponse(StatusCodes.Status401Unauthorized, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(ResultUnauthorizedStringExample))]
-        public async Task<IActionResult> Login([FromBody] LoginDTO dto)
+        public async Task<Results<Ok<string>, UnauthorizedHttpResult>> Login([FromBody] LoginDTO dto)
         {
             var response = await _authService.LoginAsync(dto);
-            if (response.StatusCode == 401)
+            if (response.IsFailed)
             {
-                return Unauthorized(response.Mensagem);
+                return TypedResults.Unauthorized();
             }
-            return Ok(response.Data);
+            return TypedResults.Ok(response.Value);
         }
 
         

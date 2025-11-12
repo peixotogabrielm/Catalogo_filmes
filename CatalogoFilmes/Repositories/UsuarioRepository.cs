@@ -21,6 +21,11 @@ namespace CatalogoFilmes.Repositories
             await _context.Usuarios.AddAsync(usuario);
         }
 
+        public async Task<Usuario> GetUsuarioByIdAsync(string usuarioId)
+        {
+            return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == usuarioId);
+        }
+
         public async Task<bool> IsEmailExistAsync(string email)
         {
             return await _context.Usuarios.AnyAsync(u => u.Email == email);

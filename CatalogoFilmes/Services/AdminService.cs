@@ -4,6 +4,9 @@ using CatalogoFilmes.Models;
 using CatalogoFilmes.Repositories;
 using CatalogoFilmes.Repositories.Interfaces;
 using CatalogoFilmes.Services.Interfaces;
+using FluentResults;
+using Microsoft.AspNetCore.Http.HttpResults;
+using static CatalogoFilmes.Helpers.Errors;
 
 namespace CatalogoFilmes.Services
 {
@@ -33,11 +36,11 @@ namespace CatalogoFilmes.Services
                     FilmesPorAno = filmesPorAno,
                 };
 
-                return Result<DashboardStatusDTO>.Ok(200, stats);
+                return Result.Ok(stats);
             }
             catch (Exception ex)
             {
-                return Result<DashboardStatusDTO>.Fail(400, $"Erro ao obter estatísticas: {ex.Message}");
+                return Result.Fail<DashboardStatusDTO>(new BadRequestError($"Erro ao obter estatísticas: {ex.Message}"));
             }
         }
 
@@ -48,7 +51,7 @@ namespace CatalogoFilmes.Services
                 var (usuarios, totalCount) = await _adminRepository.GetUsuarios(pageNumber, pageSize).ConfigureAwait(false);
                 if(usuarios.Count == 0 && totalCount == 0)
                 {
-                    return Result<ResultadoPaginaDTO<ListaUsuarioDTO>>.Ok(204, new ResultadoPaginaDTO<ListaUsuarioDTO>
+                    return Result.Ok(new ResultadoPaginaDTO<ListaUsuarioDTO>
                     {
                         Data = new List<ListaUsuarioDTO>(),
                         TotalItems = 0,
@@ -71,11 +74,11 @@ namespace CatalogoFilmes.Services
                     PageSize = pageSize
                 };
 
-                return Result<ResultadoPaginaDTO<ListaUsuarioDTO>>.Ok(200, pagedResult);
+                return Result.Ok(pagedResult);
             }
             catch (Exception ex)
             {
-                return Result<ResultadoPaginaDTO<ListaUsuarioDTO>>.Fail(400, $"Erro ao listar usuários: {ex.Message}");
+                return Result.Fail<ResultadoPaginaDTO<ListaUsuarioDTO>>(new BadRequestError($"Erro ao listar usuários: {ex.Message}"));
             }
         }
 
@@ -83,24 +86,23 @@ namespace CatalogoFilmes.Services
         {
             try
             {
-                //teste
                 if (dto.NovaRole != "Admin" && dto.NovaRole != "User")
                 {
-                    return Result<string>.Fail(401, "Role inválida. Use 'Admin' ou 'User'.");
+                    return Result.Fail<string>(new BadRequestError("Role inválida. Use 'Admin' ou 'User'."));
                 }
 
                 var sucesso = await _adminRepository.UpdateUsuarioRole(dto.UsuarioId, dto.NovaRole).ConfigureAwait(false);
 
                 if (!sucesso)
                 {
-                    return Result<string>.Fail(404, "Usuário não encontrado.");
+                    return Result.Fail<string>(new NotFoundError("Usuário não encontrado."));
                 }
 
-                return Result<string>.Ok(200, $"Role do usuário atualizada para {dto.NovaRole}");
+                return Result.Ok($"Role do usuário atualizada para {dto.NovaRole}");
             }
             catch (Exception ex)
             {
-                return Result<string>.Fail(400, $"Erro ao atualizar role: {ex.Message}");
+                return Result.Fail<string>(new BadRequestError($"Erro ao atualizar role: {ex.Message}"));
             }
         }
 
@@ -110,21 +112,21 @@ namespace CatalogoFilmes.Services
             {
                 if (currentUserId == usuarioId)
                 {
-                    return Result<string>.Fail(401, "Você não pode deletar sua própria conta.");
+                    return Result.Fail<string>(new BadRequestError("Você não pode deletar sua própria conta."));
                 }
 
                 var sucesso = await _adminRepository.DeleteUsuario(usuarioId).ConfigureAwait(false);
 
                 if (!sucesso)
                 {
-                    return Result<string>.Fail(404, "Usuário não encontrado.");
+                    return Result.Fail<string>(new NotFoundError("Usuário não encontrado."));
                 }
 
-                return Result<string>.Ok(200, "Usuário deletado com sucesso.");
+                return Result.Ok("Usuário deletado com sucesso.");
             }
             catch (Exception ex)
             {
-                return Result<string>.Fail(400, $"Erro ao deletar usuário: {ex.Message}");
+                return Result.Fail<string>(new BadRequestError($"Erro ao deletar usuário: {ex.Message}"));
             }
         }
 
@@ -145,11 +147,11 @@ namespace CatalogoFilmes.Services
                     AnoMaisAntigo = anoMaisAntigo,
                 };
 
-                return Result<FilmesStatusDTO>.Ok(200, stats);
+                return Result.Ok(stats);
             }
             catch (Exception ex)
             {
-                return Result<FilmesStatusDTO>.Fail(400, $"Erro ao obter estatísticas de filmes: {ex.Message}");
+                return Result.Fail<FilmesStatusDTO>(new BadRequestError($"Erro ao obter estatísticas de filmes: {ex.Message}"));
             }
         }
     }

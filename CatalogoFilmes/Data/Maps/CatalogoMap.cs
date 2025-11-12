@@ -21,7 +21,7 @@ namespace CatalogoFilmes.Data.Maps
 
             builder.Property(c => c.Descricao).HasMaxLength(1000);
 
-            builder.Property(c => c.Categoria).IsRequired();
+            builder.Property(c => c.Tags).IsRequired();
 
             builder.Property(c => c.Visualizacoes).HasDefaultValue(0);
             

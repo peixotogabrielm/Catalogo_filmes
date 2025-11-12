@@ -3,8 +3,10 @@ using CatalogoFilmes.DTOs;
 using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Models;
 using CatalogoFilmes.Services.Interfaces;
+using FluentResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static CatalogoFilmes.Helpers.Errors;
 
 namespace CatalogoFilmes.Services
 {
@@ -28,10 +30,10 @@ namespace CatalogoFilmes.Services
             var usuario = await _userManager.FindByEmailAsync(request.Email);
             if (usuario == null || !await _userManager.CheckPasswordAsync(usuario, request.Senha))
             {
-                return Result<string>.Fail(401, "Email ou senha inválidos");
+                return Result.Fail<string>(new UnauthorizedError("Email ou senha inválidos"));
             }
 
-            return Result<string>.Ok(200, _jwtHelper.GenerateToken(usuario));
+            return Result.Ok<string>( _jwtHelper.GenerateToken(usuario));
 
         }
 

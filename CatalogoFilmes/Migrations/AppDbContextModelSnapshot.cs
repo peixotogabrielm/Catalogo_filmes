@@ -45,9 +45,6 @@ namespace CatalogoFilmes.Migrations
                         .HasColumnName("Id")
                         .HasDefaultValueSql("NEWID()");
 
-                    b.Property<int>("Categoria")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DataCriacao")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -77,6 +74,9 @@ namespace CatalogoFilmes.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValue(0);
+
+                    b.Property<int>("Tags")
+                        .HasColumnType("int");
 
                     b.Property<string>("UsuarioId")
                         .IsRequired()
@@ -195,6 +195,15 @@ namespace CatalogoFilmes.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<double>("MediaNotas")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Notas")
+                        .HasColumnType("float");
+
+                    b.Property<int>("NumeroNotas")
+                        .HasColumnType("int");
 
                     b.Property<string>("Poster")
                         .IsRequired()

@@ -11,5 +11,6 @@ namespace CatalogoFilmes.Repositories.Interfaces
         Task<bool> IsEmailExistAsync(string email);
         Task AddUsuarioAsync(Usuario usuario);
         Task SalvarUsuarioAsync();
+        Task<Usuario> GetUsuarioByIdAsync(string usuarioId);
     }
 }

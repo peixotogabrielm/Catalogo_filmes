@@ -24,6 +24,12 @@ namespace CatalogoFilmes.Models
 
         public string Poster { get; set; }
 
+        public int NumeroNotas { get; set; }
+
+        public double Notas { get; set; }
+
+        public double MediaNotas { get; set; }
+
         public ICollection<Classificacoes> Classificacoes { get; set; } = new List<Classificacoes>();
 
         public ICollection<EquipeTecnica> Equipes { get; set; } = new List<EquipeTecnica>();

@@ -2,6 +2,7 @@
 using CatalogoFilmes.Data;
 using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Models;
+using FluentResults.Extensions.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.EnableAnnotations();
     options.ExampleFilters();
+    options.OperationFilter<GlobalResponsesOperationFilter>();
     options.SwaggerDoc("v1", new OpenApiInfo 
     { 
         Title = "API Catalogo de Filmes", 
@@ -103,14 +105,20 @@ builder.Services.AddCors(options =>
         .AllowCredentials()
         .SetIsOriginAllowed((hosts) => true));
 });
+
 builder.Services.AddIdentity<Usuario, IdentityRole>()
                 .AddRoles<IdentityRole>()
                 .AddRoleManager<RoleManager<IdentityRole>>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
-    
+
 var app = builder.Build();
 
+app.UseMiddleware<GlobalExceptionMiddleware>();
+
+AspNetCoreResult.Setup(config =>
+{
+});
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

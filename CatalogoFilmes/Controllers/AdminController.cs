@@ -2,156 +2,122 @@
 using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Services;
 using CatalogoFilmes.Services.Interfaces;
+using FluentResults;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System.Security.Claims;
+using static CatalogoFilmes.Helpers.Errors;
 
 namespace CatalogoFilmes.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize(Roles = "Admin")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;
-        private readonly IAuthService _authService;
-        public AdminController(IAdminService adminService, IAuthService authService)
+        public AdminController(IAdminService adminService)
         {
             _adminService = adminService;
-            _authService = authService;
 
         }
 
         [HttpGet("Dashboard")]
-        [Produces("application/json")]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<DashboardStatusDTO>))]
-        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessDashboardStatusDTOExample))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<DashboardStatusDTO>))]
-        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(ResultBadRequestDashboardStatusDTOExample))]
-        public async Task<IActionResult> GetDashboardStats()
+        public async Task<Results<Ok<DashboardStatusDTO>, BadRequest<string>>> GetDashboardStats()
         {
             var response = await _adminService.GetDashboardStats();
 
-            if (response.StatusCode == 400)
+            if (response.HasError<BadRequestError>())
             {
-                return BadRequest(response);
+                return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
             }
 
-            return Ok(response.Data);
+            return TypedResults.Ok(response.Value);
         }
       
         [HttpGet("Usuarios")]
-        [Produces("application/json")]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<ResultadoPaginaDTO<ListaUsuarioDTO>>))]
-        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessResultadoPaginaUsuarioDTOExample))]
-        [SwaggerResponse(StatusCodes.Status204NoContent, Type = typeof(Result<ResultadoPaginaDTO<ListaUsuarioDTO>>))]
-        [SwaggerResponseExample(StatusCodes.Status204NoContent, typeof(ResultNoContentPaginaUsuarioDTOExample))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<ResultadoPaginaDTO<ListaUsuarioDTO>>))]
-        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(ResultBadRequestPaginaListaUsuarioDTOExample))]
-        public async Task<IActionResult> GetUsuarios([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
+        public async Task<Results<Ok<ResultadoPaginaDTO<ListaUsuarioDTO>>, BadRequest<string>>> GetUsuarios([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
             var response = await _adminService.GetUsuarios(pageNumber, pageSize);
 
-            if (response.StatusCode == 400)
+            if (response.HasError<BadRequestError>())
             {
-                return BadRequest(response);
-            }else if(response.StatusCode == 204)
-            {
-                return NoContent();
+                return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
             }
 
-            return Ok(response.Data);
+            return TypedResults.Ok(response.Value);
         }
 
         [HttpPut("Usuarios/role")]
-        [Produces("application/json")]
-        [Consumes("application/json")]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessStringExample))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(ResultBadRequestStringExample))]
-        [SwaggerResponse(StatusCodes.Status401Unauthorized, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(ResultUnauthorizedStringExample))]
-        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(ResultNotFoundStringExample))]
-        public async Task<IActionResult> UpdateUserRole([FromBody] UpdateRoleDTO dto)
+        public async Task<Results<Ok<string>, BadRequest<string>, UnauthorizedHttpResult, NotFound<string>>> UpdateUserRole([FromBody] UpdateRoleDTO dto)
         {
             var response = await _adminService.UpdateUserRole(dto);
 
-            if (response.StatusCode == 400)
+            if (response.IsFailed)
             {
-                return BadRequest(response);
-            }else if(response.StatusCode == 401)
-            {
-                return Unauthorized(response);
-            }else if(response.StatusCode == 404)
-            {
-                return NotFound(response);
+                if(response.HasError<UnauthorizedError>())
+                {
+                    return TypedResults.Unauthorized();
+                }
+                else if (response.HasError<NotFoundError>())
+                {
+                    return TypedResults.NotFound(response.Errors.FirstOrDefault()?.Message);
+                }else
+                {
+                    return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
+                }
             }
 
-            return Ok(response.Data);
+            return TypedResults.Ok(response.Value);
         }
 
         [HttpDelete("Usuarios/{id}")]
-        [Produces("application/json")]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessStringExample))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(ResultBadRequestStringExample))]
-        [SwaggerResponse(StatusCodes.Status401Unauthorized, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status401Unauthorized, typeof(ResultUnauthorizedStringExample))]
-        [SwaggerResponse(StatusCodes.Status404NotFound, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status404NotFound, typeof(ResultNotFoundStringExample))]
-        public async Task<IActionResult> DeleteUsuario(Guid id)
+        public async Task<Results<Ok<string>, BadRequest<string>, UnauthorizedHttpResult, NotFound<string>>> DeleteUsuario(Guid id)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-            if (identity == null)
-            {
-                return Unauthorized(Result<string>.Fail(401, "Usuário não autenticado."));
-            }
-            
             var claimsIdentity = JwtHelper.getUserIdToken(identity);
-            if(claimsIdentity == null)
+            if (claimsIdentity == null)
             {
-                return Unauthorized(Result<string>.Fail(401, "Usuário não autenticado."));
+                return TypedResults.Unauthorized();
             }
+
             var usuarioId = Guid.Parse(claimsIdentity);
 
             var response = await _adminService.DeleteUsuario(id, usuarioId);
 
-            if (response.StatusCode == 400)
+
+            if (response.HasError<BadRequestError>())
             {
-                return BadRequest(response);
+                return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
             }
-            else if (response.StatusCode == 401)
+            else if (response.HasError<UnauthorizedError>())
             {
-                return Unauthorized(response);
+                return TypedResults.Unauthorized();
             }
-            else if (response.StatusCode == 404)
+            else if (response.HasError<NotFoundError>())
             {
-                return NotFound(response);
+                return TypedResults.NotFound(response.Errors.FirstOrDefault()?.Message);
             }
 
-            return Ok(response.Data);
+            return TypedResults.Ok(response.Value);
         }
+        
         [HttpGet("Filmes/stats")]
-        [Produces("application/json")]
-        [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(Result<FilmesStatusDTO>))]
-        [SwaggerResponseExample(StatusCodes.Status200OK, typeof(ResultSuccessFilmesStatusDTOExample))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<FilmesStatusDTO>))]
-        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(ResultBadRequestFilmeStatusDTOExample))]
-        public async Task<IActionResult> GetFilmesStats()
+        public async Task<Results<Ok<FilmesStatusDTO>, BadRequest<string>>> GetFilmesStats()
         {
             var response = await _adminService.GetFilmesStats();
 
-            if(response.StatusCode == 400)
+            if(response.HasError<BadRequestError>())
             {
-                return BadRequest(response);
+                return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
             }
 
-            return Ok(response.Data);
+            return TypedResults.Ok(response.Value);
         }
     }
 }

@@ -40,6 +40,12 @@ namespace CatalogoFilmes.Maps
             .IsRequired().HasMaxLength(100);
 
             builder.Property(f => f.Poster).HasMaxLength(500);
+
+            builder.Property(f => f.NumeroNotas).HasColumnType("int");
+
+            builder.Property(f => f.Notas).HasColumnType("float");
+
+            builder.Property(f => f.MediaNotas).HasColumnType("float");
             
             builder.HasMany(f => f.Classificacoes)
                 .WithOne(c => c.Filme)

@@ -6,16 +6,22 @@ using System.Threading.Tasks;
 using CatalogoFilmes.DTOs;
 using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Services.Interfaces;
+using FluentResults;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
+using static CatalogoFilmes.Helpers.Errors;
 
 namespace CatalogoFilmes.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public class UsuarioController : Controller
     {
         private readonly IUsuarioService _usuarioService;
@@ -25,22 +31,17 @@ namespace CatalogoFilmes.Controllers
             _usuarioService = usuarioService;
         }
 
-      [HttpPost("Registrar")]
-        [Produces("application/json")]
-        [Consumes("application/json")]
+        [HttpPost("Registrar")]
         [AllowAnonymous]
-        [SwaggerResponse(StatusCodes.Status201Created, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status201Created, typeof(ResultSuccessStringExample))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, Type = typeof(Result<string>))]
-        [SwaggerResponseExample(StatusCodes.Status400BadRequest, typeof(ResultBadRequestStringExample))]
-        public async Task<IActionResult> Registrar([FromBody] RegistroDTO dto)
+        public async Task<Results<Ok<string>, BadRequest<string>>> Registrar([FromBody] RegistroDTO dto)
         {
             var response = await _usuarioService.RegistrarAsync(dto);
-            if (response.StatusCode == 400)
+            if (response.HasError<BadRequestError>())
             {
-                return BadRequest(response.Mensagem);
+                return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
             }
-            return Created("", response.Data);
+            
+            return TypedResults.Ok(response.Value);
         }
     }
 }

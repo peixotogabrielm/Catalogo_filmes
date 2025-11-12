@@ -13,13 +13,14 @@ namespace CatalogoFilmes.Models
         public int Likes { get; set; }
         public int Dislikes { get; set; }
         public int NumeroFavoritos { get; set; }
-        public CategoriaCatalogo Categoria { get; set; }
+        public Tags Tags { get; set; }
         public ICollection<Filme> Filmes { get; set; }
         public string UsuarioId { get; set; }
         public Usuario Usuario { get; set; }
     }
     
-    public enum CategoriaCatalogo
+    [Flags]
+    public enum Tags
     {      
         Acao,
         Aventura,
@@ -62,7 +63,7 @@ namespace CatalogoFilmes.Models
         Natal,
         Dança,
         Politico,
-        Legal, // (Tribunal)
+        Legal, 
         ViagemNoTempo,
         LGBTQIA,
         Mitologia,
