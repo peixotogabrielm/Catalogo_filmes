@@ -25,9 +25,9 @@ namespace CatalogoFilmes.Services
             _usuarioRepository = usuarioRepository;
         }
         
-        public async Task<Result> AddUserCatalogoAsync(CriarCatalogoDTO criarCatalogoDto, string? usuarioId)
+        public async Task<Result<string>> AddUserCatalogoAsync(CriarCatalogoDTO criarCatalogoDto, string? usuarioId)
         {
-             if (string.IsNullOrEmpty(usuarioId))
+            if (string.IsNullOrEmpty(usuarioId))
             {
                 return Result.Fail(new UnauthorizedError("Usuário não autenticado."));
             }
@@ -43,19 +43,23 @@ namespace CatalogoFilmes.Services
                 UsuarioId = usuarioId,
             };
             await _catalogoRepository.AddCatalogoAsync(catalogo);
-            return Result.Ok().WithSuccess(new NoContentSuccess());
+            return Result.Ok().WithSuccess(new CreatedSuccess("Catálogo criado com sucesso."));
 
         }
 
-        public async Task <Result>DeleteUserCatalogoAsync(string id, string usuarioId)
+        public async Task<Result>DeleteUserCatalogoAsync(string id, string? usuarioId)
         {
+             if (string.IsNullOrEmpty(usuarioId))
+            {
+                return Result.Fail(new UnauthorizedError("Usuário não autenticado."));
+            }
             var usuario = await _usuarioRepository.GetUsuarioByIdAsync(usuarioId);
             if (usuario == null)
             {
                 return Result.Fail(new BadRequestError("Usuário não encontrado."));
             }
             await _catalogoRepository.DeleteCatalogoAsync(id);
-            return Result.Ok().WithSuccess(new OkSuccess("Catálogo deletado com sucesso."));
+            return Result.Ok().WithSuccess(new OkSuccess());
         }
 
         public async Task<Result> DislikeCatalogoAsync(string catalogoId)
@@ -135,8 +139,12 @@ namespace CatalogoFilmes.Services
             return Result.Ok().WithSuccess(new OkSuccess());
         }
 
-        public async Task<Result> UpdateUserCatalogoAsync(CatalogoDTO catalogoDto, string usuarioId)
+        public async Task<Result> UpdateUserCatalogoAsync(CatalogoDTO catalogoDto, string? usuarioId)
         {
+             if (string.IsNullOrEmpty(usuarioId))
+            {
+                return Result.Fail(new UnauthorizedError("Usuário não autenticado."));
+            }
             var usuario = await _usuarioRepository.GetUsuarioByIdAsync(usuarioId);
             if (usuario == null)
             {
@@ -150,10 +158,10 @@ namespace CatalogoFilmes.Services
                 Tags = catalogoDto.Tags,
             };
             await _catalogoRepository.UpdateCatalogoAsync(catalogo);
-            return Result.Ok().WithSuccess(new OkSuccess("Catálogo atualizado com sucesso."));
+            return Result.Ok().WithSuccess(new OkSuccess());
         }
 
-         public async Task<Result<IEnumerable<Tags>>> GetAllTagsAsync()
+        public async Task<Result<IEnumerable<Tags>>> GetAllTagsAsync()
         {
             var tags =  await EnumHelper.GetEnumValues<Tags>();
             return Result.Ok().WithSuccess(new OkSuccess(tags.Cast<Tags>()));

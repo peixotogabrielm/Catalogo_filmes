@@ -6,6 +6,7 @@ using CatalogoFilmes.Services.Interfaces;
 using FluentResults;
 using Microsoft.AspNetCore.Http.HttpResults;
 using static CatalogoFilmes.Helpers.Errors;
+using static CatalogoFilmes.Helpers.Successes;
 
 namespace CatalogoFilmes.Services
 {
@@ -29,11 +30,11 @@ namespace CatalogoFilmes.Services
                 Duracao = filme.Duracao
             };
             var retornoFilme = await _filmeRepository.AddFilme(novoFilme).ConfigureAwait(false);
-            if(retornoFilme == null)
+            if (retornoFilme == null)
             {
                 return Result.Fail<FilmeDTO>(new BadRequestError("Filme já existe"));
             }
-            return Result.Ok(new FilmeDTO
+            var filmeAdicionado = new FilmeDTO
             {
                 Id = retornoFilme.Id,
                 Titulo = retornoFilme.Titulo,
@@ -41,23 +42,25 @@ namespace CatalogoFilmes.Services
                 Ano = retornoFilme.Ano,
                 Sinopse = retornoFilme.Sinopse,
                 Duracao = retornoFilme.Duracao,
-            });
+            };
+
+            return Result.Ok().WithSuccess(new CreatedSuccess(filmeAdicionado));
         }
 
 
-        public async Task<Result<bool>> DeleteFilme(Guid id)
+        public async Task<Result> DeleteFilme(Guid id)
         {
             var filmeExistente = await _filmeRepository.GetFilmeById(id).ConfigureAwait(false);
             if (filmeExistente == null)
             {
-                return Result.Fail<bool>(new NotFoundError("Filme não encontrado"));
+                return Result.Fail(new NotFoundError("Filme não encontrado"));
             }
             var retornoDelete = await _filmeRepository.DeleteFilme(id).ConfigureAwait(false);
             if(retornoDelete == false)
             {
-                return Result.Fail<bool>(new BadRequestError("Erro ao deletar filme"));
+                return Result.Fail(new BadRequestError("Erro ao deletar filme"));
             }
-            return Result.Ok(true);
+            return Result.Ok().WithSuccess(new OkSuccess());
 
         }
 
@@ -68,7 +71,7 @@ namespace CatalogoFilmes.Services
                 var (filmes, totalCount) = await _filmeRepository.GetAllFilmes(filter).ConfigureAwait(false);
                 if(filmes == null || filmes.Count == 0)
                 {
-                    return Result.Ok(new ResultadoPaginaDTO<FilmeDTO>());
+                    return Result.Ok().WithSuccess(new OkSuccess(new ResultadoPaginaDTO<FilmeDTO>()));
                 }
                 var filmeDTOs = filmes.Select(f => new FilmeDTO
                 {
@@ -80,8 +83,6 @@ namespace CatalogoFilmes.Services
                     Duracao = f.Duracao,
                     Idioma = f.Idioma,
                     PosterUrl = f.Poster
-                    
-
                 }).ToList();
 
                 var pagedResult = new ResultadoPaginaDTO<FilmeDTO>
@@ -92,11 +93,11 @@ namespace CatalogoFilmes.Services
                     PageSize = filter.PageSize
                 };
 
-                return Result.Ok(pagedResult);
+                return Result.Ok().WithSuccess(new OkSuccess(pagedResult));
             }
             catch (Exception ex)
             {
-                return Result.Fail<ResultadoPaginaDTO<FilmeDTO>>(new BadRequestError($"Erro ao buscar filmes: {ex.Message}"));
+                return Result.Fail(new BadRequestError($"Erro ao buscar filmes: {ex.Message}"));
             }
         }
 
@@ -121,8 +122,7 @@ namespace CatalogoFilmes.Services
                 Sinopse = filme.Sinopse,
                 Duracao = filme.Duracao,
             };
-            return Result.Ok(filmeDTO);
-
+            return Result.Ok().WithSuccess(new OkSuccess(filmeDTO));
         }
 
         public async Task<Result<FilmeDTO>> UpdateFilme(FilmeUpdateDTO filme, Guid idFilme)
@@ -139,12 +139,14 @@ namespace CatalogoFilmes.Services
             filmeExistente.Ano = filme.Ano;
             filmeExistente.Sinopse = filme.Sinopse;
             filmeExistente.Duracao = filme.Duracao;
+
             await _filmeRepository.UpdateFilme(filmeExistente).ConfigureAwait(false);
-            if(filmeExistente == null)
+
+            if (filmeExistente == null)
             {
                 return Result.Fail<FilmeDTO>(new BadRequestError("Já existe um filme com esse título"));
             }
-            return Result.Ok(new FilmeDTO
+            var filmeAtualizado = new FilmeDTO
             {
                 Id = filmeExistente.Id,
                 Titulo = filmeExistente.Titulo,
@@ -153,7 +155,9 @@ namespace CatalogoFilmes.Services
                 Sinopse = filmeExistente.Sinopse,
                 Duracao = filmeExistente.Duracao,
 
-            });
+            };
+
+            return Result.Ok().WithSuccess(new OkSuccess(filmeAtualizado));
         }
     }
 }

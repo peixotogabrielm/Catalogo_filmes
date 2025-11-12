@@ -14,6 +14,7 @@ namespace CatalogoFilmes.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [ApiConventionType(typeof(ApiConvention))]
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;

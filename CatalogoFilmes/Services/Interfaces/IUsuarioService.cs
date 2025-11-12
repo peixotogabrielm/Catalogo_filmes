@@ -10,7 +10,7 @@ namespace CatalogoFilmes.Services.Interfaces
 {
     public interface IUsuarioService 
     {
-        Task<Result<string>> RegistrarAsync(RegistroDTO request);
+        Task<Result> RegistrarAsync(RegistroDTO request);
         
     }
 }

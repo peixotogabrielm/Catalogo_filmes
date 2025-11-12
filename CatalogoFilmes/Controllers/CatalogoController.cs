@@ -19,6 +19,7 @@ namespace CatalogoFilmes.Controllers
     [Authorize]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [ApiConventionType(typeof(ApiConvention))]
     public class CatalogoController : Controller
     {
         private readonly ICatalogoService _catalogoService;
@@ -52,70 +53,50 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpPut]
-        public async Task<Results<Ok, BadRequest<string>>> UpdateUserCatalogo([FromBody] CatalogoDTO catalogoDto)
+        public async Task<IResult> UpdateUserCatalogo([FromBody] CatalogoDTO catalogoDto)
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var usuarioId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var updateCatalogo = await _catalogoService.UpdateUserCatalogoAsync(catalogoDto, usuarioId);
-            if(updateCatalogo.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(updateCatalogo.Errors.FirstOrDefault()?.Message);
-            }
-            return TypedResults.Ok();
+            var updateCatalogo = await _catalogoService.UpdateUserCatalogoAsync(catalogoDto, usuarioId!);
+            return updateCatalogo.ToApiResult();
         }
 
         [HttpDelete("{id}")]
-        public async Task<Results<Ok, BadRequest<string>>> DeleteUserCatalogo(string id)
+        public async Task<IResult> DeleteUserCatalogo(string id)
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var usuarioId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var deleteCatalogo = await _catalogoService.DeleteUserCatalogoAsync(id, usuarioId);
-            if(deleteCatalogo.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(deleteCatalogo.Errors.FirstOrDefault()?.Message);
-            }
-            return TypedResults.Ok();
+            var deleteCatalogo = await _catalogoService.DeleteUserCatalogoAsync(id, usuarioId!);
+            return deleteCatalogo.ToApiResult();
         }
 
         [HttpPost("{catalogoId}/like")]
-        public async Task<Results<Ok, BadRequest<string>>> LikeCatalogo(string catalogoId)
+        public async Task<IResult> LikeCatalogo(string catalogoId)
         {
             var result = await _catalogoService.LikeCatalogoAsync(catalogoId);
-            if(result.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(result.Errors.FirstOrDefault()?.Message);
-            }
-            return TypedResults.Ok();
+            return result.ToApiResult();
         }
 
         [HttpPost("{catalogoId}/dislike")]
-        public async Task<Results<Ok, BadRequest<string>>> DislikeCatalogo(string catalogoId)
+        public async Task<IResult> DislikeCatalogo(string catalogoId)
         {
             var result = await _catalogoService.DislikeCatalogoAsync(catalogoId);
-            if(result.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(result.Errors.FirstOrDefault()?.Message);
-            }
-            return TypedResults.Ok();
+            return result.ToApiResult();
         }
 
 
         [HttpGet("{catalogoId}/numero-favoritos")]
-        public async Task<Results<Ok<int?>, BadRequest<string>>> GetNumeroFavoritos(string catalogoId)
+        public async Task<IResult> GetNumeroFavoritos(string catalogoId)
         {
             var numeroFavoritos = await _catalogoService.GetNumeroFavoritosAsync(catalogoId);
-            if (numeroFavoritos.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(numeroFavoritos.Errors.FirstOrDefault()?.Message);
-            }
-            return TypedResults.Ok(numeroFavoritos?.Value);
+            return numeroFavoritos.ToApiResult();
         }
 
         [HttpGet("Tags")]
-        public async Task<Results<Ok<IEnumerable<Tags>>, BadRequest<string>>> GetAllTags()
+        public async Task<IResult> GetAllTags()
         {
             var tags = await _catalogoService.GetAllTagsAsync();
-            return TypedResults.Ok(tags.Value);
+            return tags.ToApiResult();
         }
 
          // [HttpPost("{catalogoId}/favoritar")]

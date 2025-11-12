@@ -8,6 +8,7 @@ using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Services.Interfaces;
 using FluentResults;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,6 +23,7 @@ namespace CatalogoFilmes.Controllers
     [Authorize]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [ApiConventionType(typeof(ApiConvention))]
     public class UsuarioController : Controller
     {
         private readonly IUsuarioService _usuarioService;
@@ -33,15 +35,10 @@ namespace CatalogoFilmes.Controllers
 
         [HttpPost("Registrar")]
         [AllowAnonymous]
-        public async Task<Results<Ok<string>, BadRequest<string>>> Registrar([FromBody] RegistroDTO dto)
+        public async Task<IResult> Registrar([FromBody] RegistroDTO dto)
         {
             var response = await _usuarioService.RegistrarAsync(dto);
-            if (response.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
-            }
-            
-            return TypedResults.Ok(response.Value);
+            return response.ToApiResult();
         }
     }
 }

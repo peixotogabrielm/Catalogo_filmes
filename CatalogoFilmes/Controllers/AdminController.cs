@@ -18,6 +18,7 @@ namespace CatalogoFilmes.Controllers
     [Authorize(Roles = "Admin")]
     [Produces("application/json")]
     [Consumes("application/json")]
+    [ApiConventionType(typeof(ApiConvention))]
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;
