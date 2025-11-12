@@ -23,7 +23,6 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.EnableAnnotations();
     options.ExampleFilters();
-    options.OperationFilter<GlobalResponsesOperationFilter>();
     options.SwaggerDoc("v1", new OpenApiInfo 
     { 
         Title = "API Catalogo de Filmes", 
@@ -113,8 +112,6 @@ builder.Services.AddIdentity<Usuario, IdentityRole>()
                 .AddDefaultTokenProviders();
 
 var app = builder.Build();
-
-app.UseMiddleware<GlobalExceptionMiddleware>();
 
 AspNetCoreResult.Setup(config =>
 {

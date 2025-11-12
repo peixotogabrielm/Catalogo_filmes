@@ -53,9 +53,9 @@ namespace CatalogoFilmes.Services
                 return Result.Fail<bool>(new NotFoundError("Filme não encontrado"));
             }
             var retornoDelete = await _filmeRepository.DeleteFilme(id).ConfigureAwait(false);
-            if(!retornoDelete.Sucesso)
+            if(retornoDelete == false)
             {
-                return Result.Fail<bool>(new BadRequestError(retornoDelete.Mensagem));
+                return Result.Fail<bool>(new BadRequestError("Erro ao deletar filme"));
             }
             return Result.Ok(true);
 

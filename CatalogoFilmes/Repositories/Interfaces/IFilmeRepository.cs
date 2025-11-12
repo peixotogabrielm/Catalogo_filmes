@@ -10,6 +10,6 @@ namespace CatalogoFilmes.Repositories.Interfaces
         Task<Filme> GetFilmeById(Guid id);
         Task<Filme> AddFilme(Filme filme);
         Task<Filme> UpdateFilme(Filme filme);
-        Task<Result<bool>> DeleteFilme(Guid id);
+        Task<bool> DeleteFilme(Guid id);
     }
 }

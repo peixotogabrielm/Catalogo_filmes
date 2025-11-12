@@ -93,9 +93,11 @@ namespace CatalogoFilmes.Controllers
         public async Task<Results<Ok<bool>, NotFound<string>, BadRequest<string>>> DeleteFilme(Guid id)
         {
             var response = await _filmeService.DeleteFilme(id);
+            
             if (response.HasError<NotFoundError>())
             {
                 return TypedResults.NotFound(response.Errors.FirstOrDefault()?.Message);
+
             }else if(response.HasError<BadRequestError>())
             {
                 return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);

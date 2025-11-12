@@ -91,24 +91,24 @@ namespace CatalogoFilmes.Repositories
             }
 
         }
-        public async Task<Result<bool>> DeleteFilme(Guid id)
+        public async Task<bool> DeleteFilme(Guid id)
         {
             var filme = await _context.Filmes.FindAsync(id).ConfigureAwait(false);
 
             if (filme == null)
             {
-                return Result<bool>.Fail(400, "Filme não encontrado");
+                return false;
             }
 
             try
             {
                 _context.Filmes.Remove(filme);
                 await _context.SaveChangesAsync().ConfigureAwait(false);
-                return Result<bool>.Ok(200, true);
+                return true;
             }
             catch (Exception)
             {
-                return Result<bool>.Fail(400,"Erro ao deletar filme");
+                return false;
             }
         }
     }

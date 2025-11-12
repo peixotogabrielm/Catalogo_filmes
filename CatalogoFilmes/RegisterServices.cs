@@ -13,8 +13,10 @@ namespace CatalogoFilmes
 
         public RegisterServices(IServiceCollection services)
         {
-         
+
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IUsuarioService, UsuarioService>();
             services.AddScoped<IFilmeService, FilmeService>();
             services.AddScoped<IFilmeRepository, FilmeRepository>();
             services.AddScoped<IAdminService, AdminService>();
