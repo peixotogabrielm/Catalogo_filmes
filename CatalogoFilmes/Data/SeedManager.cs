@@ -15,6 +15,7 @@ namespace CatalogoFilmes.Data
             await SeedRoles(serviceProvider).ConfigureAwait(false);
             await SeedAdminUser(serviceProvider).ConfigureAwait(false);
         }
+
         private static async Task SeedRoles(IServiceProvider services)
         {
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
@@ -33,7 +34,6 @@ namespace CatalogoFilmes.Data
             var userManager = services.GetRequiredService<UserManager<Usuario>>();
             string adminEmail = "ADMIN@CATALOGOFILMES.COM";
             string adminPassword = "Admin@123!";
-
             var existingUserByUserName = await userManager.FindByNameAsync(adminEmail).ConfigureAwait(false);
             if (existingUserByUserName == null)
             {

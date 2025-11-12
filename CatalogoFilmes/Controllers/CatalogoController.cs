@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using CatalogoFilmes.DTOs;
 using CatalogoFilmes.Helpers;
+using CatalogoFilmes.Models;
 using CatalogoFilmes.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -122,13 +123,20 @@ namespace CatalogoFilmes.Controllers
         public async Task<Results<Ok<int?>, BadRequest<string>>> GetNumeroFavoritos(string catalogoId)
         {
             var numeroFavoritos = await _catalogoService.GetNumeroFavoritosAsync(catalogoId);
-            if(numeroFavoritos.HasError<BadRequestError>())
+            if (numeroFavoritos.HasError<BadRequestError>())
             {
                 return TypedResults.BadRequest(numeroFavoritos.Errors.FirstOrDefault()?.Message);
             }
             return TypedResults.Ok(numeroFavoritos?.Value);
         }
-        
+
+        [HttpGet("Tags")]
+        public async Task<Results<Ok<IEnumerable<Tags>>, BadRequest<string>>> GetAllTags()
+        {
+            var tags = await _catalogoService.GetAllTagsAsync();
+            return TypedResults.Ok(tags.Value);
+        }
+
          // [HttpPost("{catalogoId}/favoritar")]
         // public async Task<IActionResult> FavoritarCatalogo(string catalogoId)
         // {

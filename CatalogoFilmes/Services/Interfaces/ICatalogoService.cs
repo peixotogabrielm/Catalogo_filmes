@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CatalogoFilmes.DTOs;
+using CatalogoFilmes.Models;
 using FluentResults;
 
 namespace CatalogoFilmes.Services.Interfaces
@@ -19,6 +20,7 @@ namespace CatalogoFilmes.Services.Interfaces
         Task <Result>FavoritarCatalogoAsync(string catalogoId);
         Task <Result>RemoverFavoritoCatalogoAsync(string catalogoId);
         Task<Result<int?>> GetNumeroFavoritosAsync(string catalogoId);
+        Task<Result<IEnumerable<Tags>>> GetAllTagsAsync();
 
     }
 }

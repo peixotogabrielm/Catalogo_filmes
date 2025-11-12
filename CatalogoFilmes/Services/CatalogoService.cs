@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CatalogoFilmes.DTOs;
+using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Models;
 using CatalogoFilmes.Repositories.Interfaces;
 using CatalogoFilmes.Services.Interfaces;
@@ -147,6 +148,12 @@ namespace CatalogoFilmes.Services
             return Result.Ok();
         }
 
+         public async Task<Result<IEnumerable<Tags>>> GetAllTagsAsync()
+        {
+            var tags =  await EnumHelper.GetEnumValues<Tags>();
+            return Result.Ok(tags.Cast<Tags>());
+        }
+
         public async Task<Result> FavoritarCatalogoAsync(string catalogoId)
         {
             throw new NotImplementedException();
@@ -156,5 +163,7 @@ namespace CatalogoFilmes.Services
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }
