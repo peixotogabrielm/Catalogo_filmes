@@ -29,45 +29,26 @@ namespace CatalogoFilmes.Controllers
 
 
         [HttpGet]
-        public async Task<Results<Ok<IEnumerable<CatalogoDTO>>, BadRequest<string>>> GetAllCatalogos([FromQuery] FilterCatalogoDTO filtroDto)
+        public async Task<IResult> GetAllCatalogos([FromQuery] FilterCatalogoDTO filtroDto)
         {
             var catalogos = await _catalogoService.GetAllCatalogosAsync(filtroDto);
-            if(catalogos.IsFailed)
-            {
-                return TypedResults.BadRequest(catalogos.Errors.FirstOrDefault()?.Message);
-            }
-            return TypedResults.Ok(catalogos.Value);
+            return catalogos.ToApiResult();
         }
 
         [HttpGet("{id}")]
-        public async Task<Results<Ok<IEnumerable<CatalogoDTO>>, NotFound<string>, BadRequest<string>>> GetCatalogosById(string id)
+        public async Task<IResult> GetCatalogosById(string id)
         {
             var catalogos = await _catalogoService.GetCatalogosByIdAsync(id);
-
-            if (catalogos.HasError<NotFoundError>())
-            {
-                return TypedResults.NotFound(catalogos.Errors.FirstOrDefault()?.Message);
-            }
-
-            if (catalogos.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(catalogos.Errors.FirstOrDefault()?.Message);
-            }
-            
-            return TypedResults.Ok(catalogos.Value);
+            return catalogos.ToApiResult();
         }
 
         [HttpPost]
-        public async Task<Results<Created, BadRequest<string>>> AddUserCatalogo([FromBody] CriarCatalogoDTO catalogoDto)
+        public async Task<IResult> AddUserCatalogo([FromBody] CriarCatalogoDTO catalogoDto)
         {
             var claimsIdentity = User.Identity as ClaimsIdentity;
             var usuarioId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var addCatalogo = await _catalogoService.AddUserCatalogoAsync(catalogoDto, usuarioId);
-            if(addCatalogo.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(addCatalogo.Errors.FirstOrDefault()?.Message);
-            }
-            return TypedResults.Created();
+            var addCatalogo = await _catalogoService.AddUserCatalogoAsync(catalogoDto, usuarioId!);
+            return addCatalogo.ToApiResult();
         }
 
         [HttpPut]

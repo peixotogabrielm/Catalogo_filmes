@@ -3,6 +3,7 @@ using CatalogoFilmes.DTOs;
 using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Models;
 using CatalogoFilmes.Services.Interfaces;
+using FluentResults;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -23,14 +24,10 @@ namespace CatalogoFilmes.Controllers
 
         [HttpPost("Login")]
         [AllowAnonymous]
-        public async Task<Results<Ok<string>, UnauthorizedHttpResult>> Login([FromBody] LoginDTO dto)
+        public async Task<IResult> Login([FromBody] LoginDTO dto)
         {
             var response = await _authService.LoginAsync(dto);
-            if (response.IsFailed)
-            {
-                return TypedResults.Unauthorized();
-            }
-            return TypedResults.Ok(response.Value);
+            return response.ToApiResult();
         }
 
         

@@ -6,7 +6,9 @@ using CatalogoFilmes.Repositories.Interfaces;
 using CatalogoFilmes.Services.Interfaces;
 using FluentResults;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using static CatalogoFilmes.Helpers.Errors;
+using static CatalogoFilmes.Helpers.Successes;
 
 namespace CatalogoFilmes.Services
 {
@@ -35,8 +37,9 @@ namespace CatalogoFilmes.Services
                     FilmesPorGenero = filmesPorGenero,
                     FilmesPorAno = filmesPorAno,
                 };
-
-                return Result.Ok(stats);
+    
+                  return Result.Ok()
+                     .WithSuccess(new OkSuccess(stats));
             }
             catch (Exception ex)
             {
@@ -51,13 +54,16 @@ namespace CatalogoFilmes.Services
                 var (usuarios, totalCount) = await _adminRepository.GetUsuarios(pageNumber, pageSize).ConfigureAwait(false);
                 if(usuarios.Count == 0 && totalCount == 0)
                 {
-                    return Result.Ok(new ResultadoPaginaDTO<ListaUsuarioDTO>
+                    var retornoVazio = new ResultadoPaginaDTO<ListaUsuarioDTO>
                     {
                         Data = new List<ListaUsuarioDTO>(),
                         TotalItems = 0,
                         PageNumber = pageNumber,
                         PageSize = pageSize
-                    });
+                    };
+
+                    return Result.Ok()
+                        .WithSuccess(new OkSuccess(retornoVazio));
                 }
                 var usuarioDTOs = usuarios.Select(u => new ListaUsuarioDTO
                 {
@@ -74,7 +80,8 @@ namespace CatalogoFilmes.Services
                     PageSize = pageSize
                 };
 
-                return Result.Ok(pagedResult);
+                return Result.Ok()
+                    .WithSuccess(new OkSuccess(pagedResult));
             }
             catch (Exception ex)
             {
@@ -98,7 +105,7 @@ namespace CatalogoFilmes.Services
                     return Result.Fail<string>(new NotFoundError("Usuário não encontrado."));
                 }
 
-                return Result.Ok($"Role do usuário atualizada para {dto.NovaRole}");
+                return Result.Ok().WithSuccess(new OkSuccess($"Role do usuário atualizada para {dto.NovaRole}"));
             }
             catch (Exception ex)
             {
@@ -122,7 +129,7 @@ namespace CatalogoFilmes.Services
                     return Result.Fail<string>(new NotFoundError("Usuário não encontrado."));
                 }
 
-                return Result.Ok("Usuário deletado com sucesso.");
+                return Result.Ok().WithSuccess(new OkSuccess("Usuário deletado com sucesso."));
             }
             catch (Exception ex)
             {
@@ -147,7 +154,8 @@ namespace CatalogoFilmes.Services
                     AnoMaisAntigo = anoMaisAntigo,
                 };
 
-                return Result.Ok(stats);
+                return Result.Ok()
+                    .WithSuccess(new OkSuccess(stats));
             }
             catch (Exception ex)
             {

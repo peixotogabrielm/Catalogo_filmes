@@ -28,56 +28,31 @@ namespace CatalogoFilmes.Controllers
         }
 
         [HttpGet("Dashboard")]
-        public async Task<Results<Ok<DashboardStatusDTO>, BadRequest<string>>> GetDashboardStats()
+        public async Task<IResult> GetDashboardStats()
         {
             var response = await _adminService.GetDashboardStats();
 
-            if (response.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
-            }
-
-            return TypedResults.Ok(response.Value);
+            return response.ToApiResult();
         }
       
         [HttpGet("Usuarios")]
-        public async Task<Results<Ok<ResultadoPaginaDTO<ListaUsuarioDTO>>, BadRequest<string>>> GetUsuarios([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
+        public async Task<IResult> GetUsuarios([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
             var response = await _adminService.GetUsuarios(pageNumber, pageSize);
 
-            if (response.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
-            }
-
-            return TypedResults.Ok(response.Value);
+            return response.ToApiResult();
         }
 
         [HttpPut("Usuarios/role")]
-        public async Task<Results<Ok<string>, BadRequest<string>, UnauthorizedHttpResult, NotFound<string>>> UpdateUserRole([FromBody] UpdateRoleDTO dto)
+        public async Task<IResult> UpdateUserRole([FromBody] UpdateRoleDTO dto)
         {
             var response = await _adminService.UpdateUserRole(dto);
 
-            if (response.IsFailed)
-            {
-                if(response.HasError<UnauthorizedError>())
-                {
-                    return TypedResults.Unauthorized();
-                }
-                else if (response.HasError<NotFoundError>())
-                {
-                    return TypedResults.NotFound(response.Errors.FirstOrDefault()?.Message);
-                }else
-                {
-                    return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
-                }
-            }
-
-            return TypedResults.Ok(response.Value);
+            return response.ToApiResult();
         }
 
         [HttpDelete("Usuarios/{id}")]
-        public async Task<Results<Ok<string>, BadRequest<string>, UnauthorizedHttpResult, NotFound<string>>> DeleteUsuario(Guid id)
+        public async Task<IResult> DeleteUsuario(Guid id)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             var claimsIdentity = JwtHelper.getUserIdToken(identity);
@@ -89,35 +64,16 @@ namespace CatalogoFilmes.Controllers
             var usuarioId = Guid.Parse(claimsIdentity);
 
             var response = await _adminService.DeleteUsuario(id, usuarioId);
-
-
-            if (response.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
-            }
-            else if (response.HasError<UnauthorizedError>())
-            {
-                return TypedResults.Unauthorized();
-            }
-            else if (response.HasError<NotFoundError>())
-            {
-                return TypedResults.NotFound(response.Errors.FirstOrDefault()?.Message);
-            }
-
-            return TypedResults.Ok(response.Value);
+            return response.ToApiResult();
+            
         }
         
         [HttpGet("Filmes/stats")]
-        public async Task<Results<Ok<FilmesStatusDTO>, BadRequest<string>>> GetFilmesStats()
+        public async Task<IResult> GetFilmesStats()
         {
             var response = await _adminService.GetFilmesStats();
 
-            if(response.HasError<BadRequestError>())
-            {
-                return TypedResults.BadRequest(response.Errors.FirstOrDefault()?.Message);
-            }
-
-            return TypedResults.Ok(response.Value);
+            return response.ToApiResult();
         }
     }
 }

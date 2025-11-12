@@ -7,6 +7,7 @@ using FluentResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static CatalogoFilmes.Helpers.Errors;
+using static CatalogoFilmes.Helpers.Successes;
 
 namespace CatalogoFilmes.Services
 {
@@ -33,7 +34,7 @@ namespace CatalogoFilmes.Services
                 return Result.Fail<string>(new UnauthorizedError("Email ou senha inválidos"));
             }
 
-            return Result.Ok<string>( _jwtHelper.GenerateToken(usuario));
+            return Result.Ok().WithSuccess(new OkSuccess(_jwtHelper.GenerateToken(usuario)));
 
         }
 

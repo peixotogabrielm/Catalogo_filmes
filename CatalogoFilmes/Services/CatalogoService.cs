@@ -10,6 +10,7 @@ using CatalogoFilmes.Services.Interfaces;
 using FluentResults;
 using Microsoft.AspNetCore.Http.HttpResults;
 using static CatalogoFilmes.Helpers.Errors;
+using static CatalogoFilmes.Helpers.Successes;
 
 namespace CatalogoFilmes.Services
 {
@@ -24,8 +25,12 @@ namespace CatalogoFilmes.Services
             _usuarioRepository = usuarioRepository;
         }
         
-        public async Task<Result> AddUserCatalogoAsync(CriarCatalogoDTO criarCatalogoDto, string usuarioId)
+        public async Task<Result> AddUserCatalogoAsync(CriarCatalogoDTO criarCatalogoDto, string? usuarioId)
         {
+             if (string.IsNullOrEmpty(usuarioId))
+            {
+                return Result.Fail(new UnauthorizedError("Usuário não autenticado."));
+            }
             var usuario = await _usuarioRepository.GetUsuarioByIdAsync(usuarioId);
             if (usuario == null)
             {
@@ -38,7 +43,7 @@ namespace CatalogoFilmes.Services
                 UsuarioId = usuarioId,
             };
             await _catalogoRepository.AddCatalogoAsync(catalogo);
-            return Result.Ok();
+            return Result.Ok().WithSuccess(new NoContentSuccess());
 
         }
 
@@ -50,13 +55,13 @@ namespace CatalogoFilmes.Services
                 return Result.Fail(new BadRequestError("Usuário não encontrado."));
             }
             await _catalogoRepository.DeleteCatalogoAsync(id);
-            return Result.Ok();
+            return Result.Ok().WithSuccess(new OkSuccess("Catálogo deletado com sucesso."));
         }
 
         public async Task<Result> DislikeCatalogoAsync(string catalogoId)
         {
             await _catalogoRepository.DislikeCatalogoAsync(catalogoId);
-            return Result.Ok();
+            return Result.Ok().WithSuccess(new OkSuccess());
         }
 
         public async Task<Result<IEnumerable<CatalogoDTO>>> GetAllCatalogosAsync(FilterCatalogoDTO filtroDto)
@@ -66,7 +71,7 @@ namespace CatalogoFilmes.Services
                 var catalogos = await _catalogoRepository.GetAllCatalogos(filtroDto);
                 if( catalogos == null || !catalogos.Any())
                 {
-                    return Result.Ok(Enumerable.Empty<CatalogoDTO>());
+                    return Result.Ok().WithSuccess(new OkSuccess(new List<CatalogoDTO>()));
                 }
                 var catalogoDtos = catalogos.Select(c => new CatalogoDTO
                 {
@@ -82,7 +87,7 @@ namespace CatalogoFilmes.Services
                     NomeUsuario = c.Usuario.Nome
                 });
 
-                return Result.Ok(catalogoDtos);
+                return Result.Ok().WithSuccess(new OkSuccess(catalogoDtos));
             }catch(Exception ex)
             {
                 return Result.Fail(new BadRequestError("Erro ao carregar catálogos."));
@@ -111,7 +116,7 @@ namespace CatalogoFilmes.Services
                 NomeUsuario = c.Usuario.Nome
             });
 
-            return Result.Ok(catalogoDtos);
+            return Result.Ok().WithSuccess(new OkSuccess(catalogoDtos));
         }
 
         public async Task<Result<int?>> GetNumeroFavoritosAsync(string catalogoId)
@@ -121,13 +126,13 @@ namespace CatalogoFilmes.Services
             {
                 return Result.Fail(new BadRequestError("Catálogo não encontrado."));
             }
-            return Result.Ok(numeroFavoritos);
+            return Result.Ok().WithSuccess(new OkSuccess(numeroFavoritos));
         }
 
         public async Task<Result> LikeCatalogoAsync(string catalogoId)
         {
             await _catalogoRepository.LikeCatalogoAsync(catalogoId).ConfigureAwait(false);
-            return Result.Ok();
+            return Result.Ok().WithSuccess(new OkSuccess());
         }
 
         public async Task<Result> UpdateUserCatalogoAsync(CatalogoDTO catalogoDto, string usuarioId)
@@ -145,13 +150,13 @@ namespace CatalogoFilmes.Services
                 Tags = catalogoDto.Tags,
             };
             await _catalogoRepository.UpdateCatalogoAsync(catalogo);
-            return Result.Ok();
+            return Result.Ok().WithSuccess(new OkSuccess("Catálogo atualizado com sucesso."));
         }
 
          public async Task<Result<IEnumerable<Tags>>> GetAllTagsAsync()
         {
             var tags =  await EnumHelper.GetEnumValues<Tags>();
-            return Result.Ok(tags.Cast<Tags>());
+            return Result.Ok().WithSuccess(new OkSuccess(tags.Cast<Tags>()));
         }
 
         public async Task<Result> FavoritarCatalogoAsync(string catalogoId)
