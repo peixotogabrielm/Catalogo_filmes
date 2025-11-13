@@ -1,16 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+using CatalogoFilmes.Documentacao;
 using CatalogoFilmes.DTOs;
 using CatalogoFilmes.Helpers;
-using CatalogoFilmes.Models;
 using CatalogoFilmes.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using static CatalogoFilmes.Helpers.Errors;
+using Swashbuckle.AspNetCore.Filters;
+using System.Security.Claims;
 
 namespace CatalogoFilmes.Controllers
 {
@@ -19,7 +14,6 @@ namespace CatalogoFilmes.Controllers
     [Authorize]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ApiConventionType(typeof(ApiConvention))]
     public class CatalogoController : Controller
     {
         private readonly ICatalogoService _catalogoService;
@@ -27,7 +21,6 @@ namespace CatalogoFilmes.Controllers
         {
             _catalogoService = catalogoService;
         }
-
 
         [HttpGet]
         public async Task<IResult> GetAllCatalogos([FromQuery] FilterCatalogoDTO filtroDto)
@@ -83,7 +76,6 @@ namespace CatalogoFilmes.Controllers
             var result = await _catalogoService.DislikeCatalogoAsync(catalogoId);
             return result.ToApiResult();
         }
-
 
         [HttpGet("{catalogoId}/numero-favoritos")]
         public async Task<IResult> GetNumeroFavoritos(string catalogoId)

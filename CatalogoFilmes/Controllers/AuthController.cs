@@ -1,12 +1,10 @@
-﻿using Azure;
+﻿using CatalogoFilmes.Documentacao;
 using CatalogoFilmes.DTOs;
 using CatalogoFilmes.Helpers;
-using CatalogoFilmes.Models;
 using CatalogoFilmes.Services.Interfaces;
-using FluentResults;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace CatalogoFilmes.Controllers
 {
@@ -14,7 +12,6 @@ namespace CatalogoFilmes.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ApiConventionType(typeof(ApiConvention))]
     public class AuthController : Controller
     {
         private readonly IAuthService _authService;
@@ -31,6 +28,6 @@ namespace CatalogoFilmes.Controllers
             return response.ToApiResult();
         }
 
-        
+
     }
 }

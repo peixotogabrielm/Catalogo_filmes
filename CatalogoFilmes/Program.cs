@@ -1,5 +1,6 @@
 ﻿using CatalogoFilmes;
 using CatalogoFilmes.Data;
+using CatalogoFilmes.Documentacao;
 using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Models;
 using FluentResults.Extensions.AspNetCore;
@@ -21,13 +22,24 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.EnableAnnotations();
     options.ExampleFilters();
-    options.SwaggerDoc("v1", new OpenApiInfo 
-    { 
-        Title = "API Catalogo de Filmes", 
-        Version = "v1" 
+    
+    // Filtro inteligente que mapeia automaticamente exemplos de request e response
+    options.OperationFilter<SmartResponseExamplesFilter>();
+
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "API Catalogo de Filmes",
+        Version = "v1",
+        Description = "API para gerenciamento de catálogo de filmes com autenticação JWT"
     });
+
+    // Comentários XML para documentação
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    options.IncludeXmlComments(xmlPath);
+
+    // Configuração de autenticação JWT no Swagger
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -37,10 +49,14 @@ builder.Services.AddSwaggerGen(options =>
         BearerFormat = "JWT",
         Description = "Insira o token JWT"
     });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement{
+    
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
         {
-            new OpenApiSecurityScheme{
-                Reference = new OpenApiReference{
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
                     Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
@@ -49,6 +65,8 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+// Registra os provedores de exemplos
 builder.Services.AddSwaggerExamplesFromAssemblyOf<Program>();
 
 

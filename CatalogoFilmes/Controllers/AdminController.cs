@@ -1,15 +1,11 @@
-﻿using CatalogoFilmes.DTOs;
+﻿using CatalogoFilmes.Documentacao;
+using CatalogoFilmes.DTOs;
 using CatalogoFilmes.Helpers;
-using CatalogoFilmes.Services;
 using CatalogoFilmes.Services.Interfaces;
-using FluentResults;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System.Security.Claims;
-using static CatalogoFilmes.Helpers.Errors;
 
 namespace CatalogoFilmes.Controllers
 {
@@ -18,7 +14,6 @@ namespace CatalogoFilmes.Controllers
     [Authorize(Roles = "Admin")]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ApiConventionType(typeof(ApiConvention))]
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;
@@ -35,7 +30,7 @@ namespace CatalogoFilmes.Controllers
 
             return response.ToApiResult();
         }
-      
+
         [HttpGet("Usuarios")]
         public async Task<IResult> GetUsuarios([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 20)
         {
@@ -66,9 +61,9 @@ namespace CatalogoFilmes.Controllers
 
             var response = await _adminService.DeleteUsuario(id, usuarioId);
             return response.ToApiResult();
-            
+
         }
-        
+
         [HttpGet("Filmes/stats")]
         public async Task<IResult> GetFilmesStats()
         {

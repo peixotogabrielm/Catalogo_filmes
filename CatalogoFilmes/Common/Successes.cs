@@ -17,7 +17,7 @@ namespace CatalogoFilmes.Helpers
                 Metadata.Add("Data", data);
                 Metadata.Add("Timestamp", DateTime.UtcNow); 
             }
-
+     
             public OkSuccess(object data, string message)
                 : base(message)
             {
@@ -44,10 +44,11 @@ namespace CatalogoFilmes.Helpers
             public CreatedSuccess(object data)
                 : base("Criado com sucesso")
             {
-                Metadata.Add("HttpCode", 201);  
+                Metadata.Add("HttpCode", 201);
                 Metadata.Add("Data", data);
                 Metadata.Add("Timestamp", DateTime.UtcNow);
             }
+            
         }
 
         public class NoContentSuccess : Success

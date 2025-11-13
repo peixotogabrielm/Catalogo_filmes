@@ -1,14 +1,11 @@
 ﻿using CatalogoFilmes.DTOs;
-using CatalogoFilmes.Helpers;
-using CatalogoFilmes.Models;
-using CatalogoFilmes.Repositories;
+
 using CatalogoFilmes.Repositories.Interfaces;
 using CatalogoFilmes.Services.Interfaces;
 using FluentResults;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
 using static CatalogoFilmes.Helpers.Errors;
 using static CatalogoFilmes.Helpers.Successes;
+
 
 namespace CatalogoFilmes.Services
 {

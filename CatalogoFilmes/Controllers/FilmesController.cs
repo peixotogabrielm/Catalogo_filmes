@@ -1,19 +1,12 @@
-﻿using CatalogoFilmes.DTOs;
+﻿using CatalogoFilmes.Documentacao;
+using CatalogoFilmes.DTOs;
 using CatalogoFilmes.Helpers;
 using CatalogoFilmes.Services.Interfaces;
-using FluentResults;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System.ComponentModel.DataAnnotations;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
-using static CatalogoFilmes.Helpers.Errors;
 
 namespace CatalogoFilmes.Controllers
 {
@@ -22,7 +15,6 @@ namespace CatalogoFilmes.Controllers
     [Authorize(Roles = "Admin")]
     [Produces("application/json")]
     [Consumes("application/json")]
-    [ApiConventionType(typeof(ApiConvention))]
     public class FilmesController : Controller
     {
         private readonly IFilmeService _filmeService;
