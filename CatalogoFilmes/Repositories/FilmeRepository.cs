@@ -41,13 +41,67 @@ namespace CatalogoFilmes.Repositories
 
                 var totalCount = await query.CountAsync().ConfigureAwait(false);
 
-                var filmes = await query
-                    .Skip((filter.PageNumber - 1) * filter.PageSize)
-                    .Take(filter.PageSize)
-                    .ToListAsync()
-                    .ConfigureAwait(false);
 
-                return (filmes, totalCount);
+                // buscar id da pagina
+                var skip = (filter.PageNumber - 1) * filter.PageSize;
+
+                var idsPage = await query
+                .OrderBy(f => f.Titulo) 
+                .Select(f => f.Id)
+                .Skip(skip)
+                .Take(filter.PageSize)
+                .ToListAsync();
+
+                // buscar filmes completos com os ids da pagina
+                var filmesPage = await _context.Filmes
+                .AsNoTracking()
+                .Where(f => idsPage.Contains(f.Id))
+                .Select(f => new Filme {
+                    Id = f.Id,
+                    Titulo = f.Titulo,
+                    Ano = f.Ano,
+                    Genero = f.Genero,
+                    Sinopse = f.Sinopse,
+                    Duracao = f.Duracao,
+                    Idioma = f.Idioma,
+                    Poster = f.Poster,
+                    Trailer = f.Trailer
+                })
+                .ToListAsync();
+
+                // buscar equipes tecnicas dos filmes da pagina
+                var equipes = await _context.EquipeTecnicas
+                .AsNoTracking()
+                .Where(e => idsPage.Contains(e.FilmeId))
+                .Select(e => new EquipeTecnica {
+                    Id = e.Id,
+                    FilmeId = e.FilmeId,
+                    Nome = e.Nome,
+                    Cargo = e.Cargo
+                })
+                .ToListAsync();
+
+                // buscar notas externas dos filmes da pagina
+                var classificacoes = await _context.Classificacoes
+                .AsNoTracking()
+                .Where(c => idsPage.Contains(c.FilmeId))
+                .Select(c => new Classificacoes {
+                    Id = c.Id,
+                    FilmeId = c.FilmeId,
+                    Fonte = c.Fonte,
+                    Nota = c.Nota
+                })
+                .ToListAsync();
+
+                // associar equipes tecnicas e notas externas aos filmes
+                foreach (var filme in filmesPage)
+                {
+                    filme.Equipes = equipes.Where(e => e.FilmeId == filme.Id).ToList();
+                    filme.Classificacoes = classificacoes.Where(c => c.FilmeId == filme.Id).ToList();
+                }
+
+    
+                return (filmesPage, totalCount);
             }catch(SqlException ex)
             {
                 throw new Exception("Erro ao buscar filmes: " + ex.Message);

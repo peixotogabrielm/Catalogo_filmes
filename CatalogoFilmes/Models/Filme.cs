@@ -36,7 +36,7 @@ namespace CatalogoFilmes.Models
 
         public ICollection<EquipeTecnica> Equipes { get; set; } = new List<EquipeTecnica>();
         
-        public ICollection<Catalogo> Catalogos { get; set; }
+        public ICollection<Catalogo> Catalogos { get; set; } = new List<Catalogo>();
 
     }
     

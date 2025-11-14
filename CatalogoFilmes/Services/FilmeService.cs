@@ -83,7 +83,19 @@ namespace CatalogoFilmes.Services
                     Duracao = f.Duracao,
                     Idioma = f.Idioma,
                     PosterUrl = f.Poster,
-                    Trailer = f.Trailer
+                    Trailer = f.Trailer,
+                    Equipe = f.Equipes.Select(e => new EquipeDTO
+                    {
+                        Id = e.Id,
+                        Nome = e.Nome,
+                        Cargo = e.Cargo
+                    }).ToList(),
+                    NotasExternas = f.Classificacoes.Select(n => new NotasFilmeExternoDTO
+                    {
+                        Id = n.Id,
+                        Fonte = n.Fonte,
+                        Nota = n.Nota
+                    }).ToList()
                 }).ToList();
 
                 var pagedResult = new ResultadoPaginaDTO<FilmeDTO>
