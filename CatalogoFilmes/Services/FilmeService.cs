@@ -82,7 +82,8 @@ namespace CatalogoFilmes.Services
                     Sinopse = f.Sinopse,
                     Duracao = f.Duracao,
                     Idioma = f.Idioma,
-                    PosterUrl = f.Poster
+                    PosterUrl = f.Poster,
+                    Trailer = f.Trailer
                 }).ToList();
 
                 var pagedResult = new ResultadoPaginaDTO<FilmeDTO>

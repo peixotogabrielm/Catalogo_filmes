@@ -34,7 +34,7 @@ namespace CatalogoFilmes.Migrations
 
                     b.HasIndex("FilmesId");
 
-                    b.ToTable("CatalogoFilmes", (string)null);
+                    b.ToTable("FilmesCatalogos", (string)null);
                 });
 
             modelBuilder.Entity("CatalogoFilmes.Models.Catalogo", b =>
@@ -224,6 +224,11 @@ namespace CatalogoFilmes.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Trailer")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("Id");
 

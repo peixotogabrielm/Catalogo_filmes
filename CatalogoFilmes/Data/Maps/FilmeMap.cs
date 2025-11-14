@@ -46,6 +46,12 @@ namespace CatalogoFilmes.Maps
             builder.Property(f => f.Notas).HasColumnType("float");
 
             builder.Property(f => f.MediaNotas).HasColumnType("float");
+
+            builder.Property(f => f.Trailer).HasColumnType("nvarchar(max)");
+
+            builder.HasMany(f => f.Catalogos)
+                .WithMany(c => c.Filmes)
+                .UsingEntity(j => j.ToTable("FilmesCatalogos"));
             
             builder.HasMany(f => f.Classificacoes)
                 .WithOne(c => c.Filme)
